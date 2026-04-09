@@ -4,9 +4,9 @@ import util
 
 from linear_model import LinearModel
 
-ds1_train_path = './problem-sets/PS1/data/ds1_train.csv'
-ds1_eval_path = './problem-sets/PS1/data/ds1_valid.csv'
-ds1_pred_path = './problem-sets/PS1/out/ds1_pred.txt'
+ds1_train_path = './PS1/data/ds1_train.csv'
+ds1_eval_path = './PS1/data/ds1_valid.csv'
+ds1_pred_path = './PS1/output/p01b_pred1.txt'
 
 def main(train_path, eval_path, pred_path):
     """Problem 1(b): Logistic regression with Newton's Method.
@@ -20,13 +20,6 @@ def main(train_path, eval_path, pred_path):
     x_train, y_train = util.load_dataset(train_path, add_intercept=True)
     x_eval, y_eval = util.load_dataset(eval_path, add_intercept=True)
 
-    # plt.figure(figsize=(12, 8))
-    # plt.xlabel('x1')
-    # plt.ylabel('x2')
-    # plt.plot(x_train[y_train == 1, -2], x_train[y_train == 1, -1], 'bx', linewidth=2)
-    # plt.plot(x_train[y_train == 0, -2], x_train[y_train == 0, -1], 'go', linewidth=2)
-    # plt.show()
-
     clf = LogisticRegression()
     clf.fit(x_train, y_train)
 
@@ -35,7 +28,9 @@ def main(train_path, eval_path, pred_path):
     print("The accuracy on training set is: ", np.mean(clf.predict(x_train) == y_train))
 
     util.plot(x_eval, y_eval, clf.theta)
-    print("The accuracy on training set is: ", np.mean(clf.predict(x_eval) == y_eval))
+    y_pred = clf.predict(x_eval)
+    print("The accuracy on validation set is: ", np.mean(y_pred == y_eval))
+    np.savetxt(pred_path, y_pred, '%d')
 
 class LogisticRegression(LinearModel):
     """Logistic regression with Newton's Method as the solver.
