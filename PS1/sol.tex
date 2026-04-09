@@ -1,5 +1,7 @@
 \documentclass{article}
 
+\usepackage{hyperref}
+\usepackage{graphicx}
 \usepackage{fancyhdr}
 \usepackage{extramarks}
 \usepackage{amsmath}
@@ -308,23 +310,40 @@
         }=0
     \end{aligned}
     \]
-\[
-\begin{aligned}
-    -\sum_{i=1}^m{
-        \frac{1}{2}(x^{(i)}-    \mu_{y^{(i)}})(x^{(i)}-\mu_{y^{(i)}})^T
-        +\frac{m}{2}\Sigma
-        }&=0\\
-    \Sigma&=\frac{1}{m}\sum_{i=1}^m{
-        (x^{(i)}-\mu_{y^{(i)}})
-        (x^{(i)}-\mu_{y^{(i)}})^T
-        }
-\end{aligned}
-\]
-    
+    \[
+    \begin{aligned}
+        -\sum_{i=1}^m{
+            \frac{1}{2}(x^{(i)}-    \mu_{y^{(i)}})(x^{(i)}-\mu_{y^{(i)}})^T
+            +\frac{m}{2}\Sigma
+            }&=0\\
+        \Sigma&=\frac{1}{m}\sum_{i=1}^m{
+            (x^{(i)}-\mu_{y^{(i)}})
+            (x^{(i)}-\mu_{y^{(i)}})^T
+            }
+    \end{aligned}
+    \]
 
+    \textbf{(e)} See code.
+
+    \textbf{(f)} See \autoref{fig:dataset1}.
+    \begin{figure}[!htbp]
+        \centering
+        \includegraphics[width=0.5\linewidth]{PS1/output/p01fg_pred1.png}
+        \caption{ Dataset 1}
+        \label{fig:dataset1}
+    \end{figure}
+
+    \textbf{(g)} See \autoref{fig:dataset2}.
+    \begin{figure}[!htbp]
+        \centering
+        \includegraphics[width=0.5\linewidth]{PS1/output/p01fg_pred2.png}
+        \caption{ Dataset 2}
+        \label{fig:dataset2}
+    \end{figure}
+
+    GDA is much poorer than logistic regression for dataset 1 but performs almost as good as logistic regression for dataset 2.This is because GDA assumes a Gaussian distribution of the features of the 2 classes. So for dataset 1 where it is not Gaussian, GDA fails.
 \end{homeworkProblem}
 
-\newpage
 \begin{homeworkProblem}
     
 \end{homeworkProblem}
