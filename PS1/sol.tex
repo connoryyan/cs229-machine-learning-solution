@@ -153,61 +153,43 @@
             (1-y^{(i)})\log{\left(1-h_\theta(x^{(i)})\right)}}
         }
     \]
-    where $y^{(i)}\in\{0,1\}$, $h_\theta(x)=g(\theta^Tx)$ and $g(z)=1/(1+e^{-z})$. The Hessian, $\nabla^2_\theta J(\theta)\in \R^{n\times n}$, has entries
+    where \$y^{(i)}\in\{0,1\}$, $h_\theta(x)=g(\theta^Tx)$ and $g(z)=1/(1+e^{-z})$. As $g'(z)=g(z)(1-g(z))$, therefore the gradient is
     \[
-        \left(\nabla^2_\theta J(\theta)\right)_{ij}
-        =\frac{\partial^2J(\theta)}{\partial\theta_i\partial\theta_j}
-        =\frac{\partial}{\partial\theta_j}\left(
-            -\frac{1}{m}\sum^m_{k=1}{
-                \frac{y^{(k)}}{h_\theta(x^{(i)})}\cdot
-                \frac{\mb dg(\theta^Tx^{(i)})}{\mb d(\theta^Tx^{(i)})}\cdot
-                x_i+
-                \frac{1-y^{(k)}}{1-h_\theta(x^{(i)})}\cdot
-                \left(
-                    -\frac{\mb dg((\theta^Tx^{(i)}))}{\mb d(\theta^Tx^{(i)})}
-                    \cdot x_i
-                \right)
-            }
-        \right).
-    \]
-     As $g'(z)=g(z)(1-g(z))$, therefore
-     \[
-     \begin{aligned}
-        H_{ij}
-        &=\frac{\partial}{\partial\theta_j}\left(
-            -\frac{1}{m}\sum^m_{k=1}{
-                \frac{y^{(k)}}{h_\theta(x^{(i)})}\cdot
-                h_\theta(x^{(k)})(1-h_\theta(x^{(k)})x_i+
-                \frac{1-y^{(k)}}{1-h_\theta(x^{(k)})}\cdot
-                \left(
-                    -h_\theta(x^{(k)})(1-h_\theta(x^{(k)})x_i
-                \right)
-            }
-        \right)\\
-        &=\frac{\partial}{\partial\theta_j}\left(
-            -\frac{1}{m}\sum^m_{k=1}{
-                y^{(k)}(1-h_\theta(x^{(k)})x_i-
-                (1-y^{(k)})h_\theta(x^{(k)})x_i
-            }
-        \right)\\
-        &=\frac{\partial}{\partial\theta_j}\left(
-            \frac{1}{m}\sum^m_{k=1}{
-                (h_\theta(x^{(k)})-y^{(k)})x^{(k)}_i
-            }
-        \right)\\
-        &=\frac{1}{m}\sum^m_{k=1}{
-                h_\theta(x^{(k)})(1-h_\theta(x^{(k)}))x^{(k)}_ix^{(k)}_j
-            }\\
-        &=\frac{1}{m}\sum^m_{k=1}{
-                h_\theta(x^{(k)})(1-h_\theta(x^{(k)}))\left[(x^{(k)}x^{(k)})^T\right]_{ij}
-            }
+    \begin{aligned}
+        \nabla_\theta J(\theta)
+        &=-\frac{1}{m}\sum^m_{i=1}
+        {
+            y^{(i)}\frac{h_\theta (x^{(i)})(1-h_\theta (x^{(i)}))x^{(i)}}{h_\theta (x^{(i)})}
+            +(1-y^{(i)})\frac{-h_\theta (x^{(i)})(1-h_\theta (x^{(i)}))x^{(i)}}{\left(1-h_\theta(x^{(i)})\right)}
+        }\\
+        &=-\frac{1}{m}\sum^m_{i=1}
+        {
+            y^{(i)}(1-h_\theta (x^{(i)}))x^{(i)}
+            -(1-y^{(i)})h_\theta (x^{(i)})x^{(i)}
+        }\\
+        &=-\frac{1}{m}\sum^m_{i=1}
+        {
+            \left(y^{(i)}-h_\theta (x^{(i)})\right)x^{(i)}
+        }
     \end{aligned}
     \]
-    Hence,
-    \[
-        H=\frac{1}{m}\sum^m_{k=1}{
-                h_\theta(x^{(k)})(1-h_\theta(x^{(k)}))\left[x^{(k)}(x^{(k)})^T\right]
-            }.
+     
+     \[
+     \begin{aligned}
+        H
+        &=-\frac{1}{m}\nabla_\theta\sum^m_{i=1}
+        {
+            \left(y^{(i)}-h_\theta (x^{(i)})\right)x^{(i)}
+        }\\
+        &=\frac{1}{m}\sum^m_{i=1}
+        {
+            \nabla_\theta\left(h_\theta (x^{(i)})x^{(i)}\right)
+        }\\
+        &=\frac{1}{m}\sum^m_{i=1}
+        {
+            (1-h_\theta (x^{(i)}))(h_\theta (x^{(i)})x^{(i)}(x^{(i)})^T
+        }.
+    \end{aligned}
     \]
 
     For any vector $z\in\R^n$, we want to prove
@@ -269,7 +251,6 @@
      }
     \end{aligned}
     \]
-
     w.r.t. $\phi$:
 
     \[
@@ -281,7 +262,6 @@
      &=\sum_{i=1}^m{\frac{y^{(i)}}{\phi}}-\sum_{i=1}^m\frac{1-y^{(i)}}{1-\phi} =0
     \end{aligned}
     \]
-
     \[
     \begin{aligned}
     \frac{1}{\phi}\sum_{i=1}^m1\{y^{(i)}=1\}&=\frac{1}{1-\phi}\sum_{i=1}^m1\{y^{(i)}=0\}\\
@@ -290,13 +270,10 @@
     \phi&=\frac{1}{m}\sum_{i=1}^m1\{y^{(i)}=1\}
     \end{aligned}
     \]
-
-    w.r.t. $\mu_0$
-
-    \[
+    w.r.t. $\mu_0$    \[
     \begin{aligned}
-    \frac{\partial}{\partial\mu_0}\ell(\phi,\mu_0,\mu_1,\Sigma)
-     &=\frac{\partial}{\partial\mu_0}\sum_{i=1}^m{
+    \nabla_{\mu_0}\ell(\phi,\mu_0,\mu_1,\Sigma)
+     &=\nabla_{\mu_0}\sum_{i=1}^m{
         -\frac{1\{y^{(i)}=0\}}{2}(x^{(i)}-\mu_0)^T\Sigma^{-1}(x^{(i)}-\mu_0)
      } \\
     &=\sum_{i=1}^m{
@@ -315,12 +292,34 @@
      \mu_0&=\frac{\sum_{i=1}^m{1\{y^{(i)}=0\}x^{(i)}}}{\sum_{i=1}^m{1\{y^{(i)}=0\}}}
     \end{aligned}
     \]
-
     Similar for $\mu_1$, we have
     \[ \mu_1=\frac{\sum_{i=1}^m{1\{y^{(i)}=1\}x^{(i)}}}{\sum_{i=1}^m{1\{y^{(i)}=1\}}}\]
-
-    w.r.t. $\Sigma$, consider it as a real number:
-
+    w.r.t. $\Sigma$, consider $\Sigma$ as a scalar $\sigma^2$, hence:
+    \[
+    \begin{aligned}
+        \frac{\partial}{\partial\Sigma}\ell(\phi,\mu_0,\mu_1,\Sigma)
+        &= \frac{\partial}{\partial\Sigma}\sum_{i=1}^m{
+        -\frac{1}{2}(x^{(i)}-\mu_{y^{(i)}})^T\Sigma^{-1}(x^{(i)}-    \mu_{y^{(i)}})
+        -\frac{1}{2}\log|\Sigma|
+        }\\
+        &=-\sum_{i=1}^m{
+        \frac{1}{2}(x^{(i)}-    \mu_{y^{(i)}})(x^{(i)}-\mu_{y^{(i)}})^T\Sigma^{-2}
+        +\frac{1}{2\Sigma}
+        }=0
+    \end{aligned}
+    \]
+\[
+\begin{aligned}
+    -\sum_{i=1}^m{
+        \frac{1}{2}(x^{(i)}-    \mu_{y^{(i)}})(x^{(i)}-\mu_{y^{(i)}})^T
+        +\frac{m}{2}\Sigma
+        }&=0\\
+    \Sigma&=\frac{1}{m}\sum_{i=1}^m{
+        (x^{(i)}-\mu_{y^{(i)}})
+        (x^{(i)}-\mu_{y^{(i)}})^T
+        }
+\end{aligned}
+\]
     
 
 \end{homeworkProblem}
