@@ -7,6 +7,10 @@ ds1_train_path = './PS1/data/ds1_train.csv'
 ds1_eval_path = './PS1/data/ds1_valid.csv'
 ds1_pred_path = './PS1/output/p01e_pred1.txt'
 
+ds2_train_path = './PS1/data/ds2_train.csv'
+ds2_eval_path = './PS1/data/ds2_valid.csv'
+ds2_pred_path = './PS1/output/p01b_pred2.txt'
+
 def main(train_path, eval_path, pred_path):
     """Problem 1(e): Gaussian discriminant analysis (GDA)
 
@@ -84,5 +88,7 @@ class GDA(LinearModel):
         """
         m, n = x.shape
         return np.hstack([np.ones((m, 1)), x]) @ self.theta >= 0
-    
-main(ds1_train_path, ds1_eval_path, ds1_pred_path)
+
+if __name__ == '__main__': 
+    main(ds1_train_path, ds1_eval_path, ds1_pred_path)
+    main(ds2_train_path, ds2_eval_path, ds2_pred_path)
