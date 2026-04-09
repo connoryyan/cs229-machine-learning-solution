@@ -153,7 +153,7 @@
             (1-y^{(i)})\log{\left(1-h_\theta(x^{(i)})\right)}}
         }
     \]
-    where \$y^{(i)}\in\{0,1\}$, $h_\theta(x)=g(\theta^Tx)$ and $g(z)=1/(1+e^{-z})$. As $g'(z)=g(z)(1-g(z))$, therefore the gradient is
+    where $y^{(i)}\in\{0,1\}$, $h_\theta(x)=g(\theta^Tx)$ and $g(z)=1/(1+e^{-z})$. As $g'(z)=g(z)(1-g(z))$, therefore the gradient is
     \[
     \begin{aligned}
         \nabla_\theta J(\theta)
@@ -237,7 +237,7 @@
     \end{aligned}
     \]
 
-    where $\theta^T=(\mu_0-\mu_1)^T\Sigma^{-1}$ and $\theta_0=-\frac{1}{2}(\mu_1^T\Sigma^{-1}\mu_1-\mu_0^T\Sigma^{-1}\mu_0)-\log \frac{1-\phi}{\phi}$.
+    where $\theta^T=(\mu_1-\mu_0)^T\Sigma^{-1}$ and $\theta_0=-\frac{1}{2}(\mu_1^T\Sigma^{-1}\mu_1-\mu_0^T\Sigma^{-1}\mu_0)-\log \frac{1-\phi}{\phi}$.
 
     \textbf{(d)}
     \[
