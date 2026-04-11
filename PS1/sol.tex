@@ -341,10 +341,35 @@
         \label{fig:dataset2}
     \end{figure}
 
-    GDA is much poorer than logistic regression for dataset 1 but performs almost as good as logistic regression for dataset 2.This is because GDA assumes a Gaussian distribution of the features of the 2 classes. So for dataset 1 where it is not Gaussian, GDA fails.
+    GDA is much poorer than logistic regression for dataset 1, but performs almost as well as logistic regression for dataset 2. This is because GDA assumes a Gaussian distribution of the features of the 2 classes. Thus, for dataset 1, which is not Gaussian, GDA fails.
 \end{homeworkProblem}
 
 \begin{homeworkProblem}
+    \textbf{(a)}
+    \[p(y^{(i)}=1|t^{(i)}=1,x^{(i)})=p(y^{(i)}=1|t^{(i)}=1)\]
+    \[
+    \begin{aligned}
+        p(y^{(i)}=1|x^{(i)})
+        &= p(y^{(i)}=1, t^{(i)}=1|x^{(i)})
+            + p(y^{(i)}=1, t^{(i)}=0|x^{(i)})\\
+        &= p(y^{(i)}=1, t^{(i)}=1|x^{(i)})\\
+        &= p(y^{(i)}=1|x^{(i)}, t^{(i)}=1)p(t^{(i)}=1|x^{(i)})\\
+        &= \alpha p(t^{(i)}=1|x^{(i)}), 
+    \end{aligned}
+    \]
+    where $\alpha=p(y^{(i)}=1|x^{(i)}, t^{(i)}=1)=p(y^{(i)}=1|t^{(i)}=1).$ 
+
+    \textbf{(b)} For $x^{(i)}\in V_+$,
+    \[
+    \begin{aligned}
+        h(x^{(i)})&\approx p(y^{(i)}=1|x^{(i)})\\
+        &= \alpha p(t^{(i)}=1|x^{(i)})\text{, use the conclusion from (a)}\\
+        & \approx \alpha
+    \end{aligned}
+    \]
+
+    \textbf{(c)}
+    
     
 \end{homeworkProblem}
 
