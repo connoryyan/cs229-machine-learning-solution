@@ -393,4 +393,64 @@
     \end{figure}
 \end{homeworkProblem}
 
+\begin{homeworkProblem}
+    \textbf{(a)} Consider the Poisson distribution
+    
+    \[
+    \begin{aligned}
+        p(y;\lambda)&=\frac{e^{-\lambda}\lambda^y}{y!}\\
+        &= \frac{1}{y!}\exp\left( y \ln \lambda-\lambda \right)\\
+        &= b(y)\exp(\eta^T T(y) - a(\eta)),
+    \end{aligned}
+    \]
+    where
+    \[
+    \begin{aligned}
+        b(y) &= 1/y!\\
+        \eta &= \ln \lambda\\
+        T(y) &= y\\
+        a(\eta) &= e^\eta = \lambda
+    \end{aligned}
+    \]
+
+    \textbf{(b)}
+    Hypothesis is
+    \[
+    \begin{aligned}
+        h_\theta(x) &= E[y|x;\theta]
+        = \lambda
+        = e^\eta
+        = \exp{(\theta^T x)}
+    \end{aligned}
+    \]
+
+    \textbf{(c)} The log-likelyhood of an example is
+    \[
+    \begin{aligned}
+        \ell(\theta)
+        &= \log p(y^{(i)}|x^{(i)};\theta)\\
+        &= \log \left( \frac{1}{y^{(i)}!}\exp\left( y^{(i)} \ln \lambda-\lambda \right) \right)\\
+        &= \log{\frac{1}{y^{(i)}!}} + y^{(i)} \ln \lambda-\lambda\\
+        &= \log{\frac{1}{y^{(i)}!}} + \theta^Tx^{(i)}y^{(i)} - \exp(\theta^Tx^{(i)})
+    \end{aligned}
+    \]
+    Its derivative w.r.t. $\theta_j$ is
+    \[\begin{aligned}
+        \frac{\partial\ell(\theta)}{\partial\theta_j}
+        &= x^{(i)}_jy^{(i)}-x^{(i)}_j\exp(\theta^Tx^{(i)})\\
+        &= x^{(i)}_j \left( y^{(i)} - h_\theta(x^{(i)}) \right)
+    \end{aligned}\]
+    Hence, the stocahstic gradient decent is
+    \begin{quote}
+    Loop \{ \\
+    \hspace*{2em} For every j \{ \\
+    \hspace*{2em} \hspace*{2em} $ \theta_j := \theta_j + \alpha x^{(i)}_j \left( y^{(i)} - h_\theta(x^{(i)}) \right) $\\
+    \hspace*{2em} \} \\
+    \}
+    \end{quote}
+        
+    
+    
+\end{homeworkProblem}
+
 \end{document}
