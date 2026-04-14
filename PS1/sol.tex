@@ -107,7 +107,7 @@
 }
 
 \author{\hmwkAuthorName}
-\date{}
+\date{\today}
 
 \renewcommand{\part}[1]{\textbf{\large Part \Alph{partCounter}}\stepcounter{partCounter}\\}
 
@@ -131,10 +131,11 @@
 \newcommand{\solution}{\textbf{\large Solution}}
 
 % Probability commands: Expectation, Variance, Covariance, Bias
-\newcommand{\E}{\mathrm{E}}
+\newcommand{\E}{\mathbb{E}}
 \newcommand{\Var}{\mathrm{Var}}
 \newcommand{\Cov}{\mathrm{Cov}}
 \newcommand{\Bias}{\mathrm{Bias}}
+\newcommand{\dd}{\mathrm{d}}
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\mb}{\mathrm}
 
@@ -417,7 +418,7 @@
     Hypothesis is
     \[
     \begin{aligned}
-        h_\theta(x) &= E[y|x;\theta]
+        h_\theta(x) &= \E[y|x;\theta]
         = \lambda
         = e^\eta
         = \exp{(\theta^T x)}
@@ -440,17 +441,103 @@
         &= x^{(i)}_jy^{(i)}-x^{(i)}_j\exp(\theta^Tx^{(i)})\\
         &= x^{(i)}_j \left( y^{(i)} - h_\theta(x^{(i)}) \right)
     \end{aligned}\]
-    Hence, the stocahstic gradient acent is
+    Hence, the stochastic gradient ascent is
     \begin{quote}
     Loop \{ \\
     \hspace*{2em} For every $1\le i\le m$ \{ \\
-    \hspace*{2em} \hspace*{2em} $ \theta_j := \theta_j + \alpha x^{(i)}_j \left( y^{(i)} - h_\theta(x^{(i)}) \right) $\\
+    \hspace*{2em} \hspace*{2em} $ \theta := \theta + \alpha \left( y^{(i)} - h_\theta(x^{(i)})\right) x $\\
     \hspace*{2em} \} \\
     \}
     \end{quote}
         
     \textbf{(d)} See code.
     
+\end{homeworkProblem}
+\begin{homeworkProblem}
+    \textbf{(a)}
+    \[
+    \begin{aligned}
+        \int{p(y;\eta)\dd{y}} &= 1\\
+        \frac{\partial}{\partial\eta}\int{p(y;\eta)\dd{y}} &= 0
+    \end{aligned}
+    \]
+    \[
+    \begin{aligned}
+        \frac{\partial}{\partial\eta}\int{p(y;\eta)\dd{y}}
+        &= \int{\frac{\partial}{\partial\eta}p(y;\eta)\dd{y}}\\
+        &= \int{b(y)(y-a'(\eta))\exp(\eta y-a(\eta))\dd{y}}\\
+        &= \int{yb(y)\exp(\eta y-a(\eta))\dd{y}}
+            -a'(\eta)\int{b(y)\exp(\eta y-a(\eta))\dd{y}}\\
+        &= \E[y;\eta]-a'(\eta) = 0
+    \end{aligned}
+    \]
+
+    Hence,
+    \[
+        \E[Y|X;\theta] = a'(\eta)
+    \]
+
+    \textbf{(b)}
+    \[
+        \begin{aligned}
+            \frac{\partial}{\partial\eta}\E[Y|X;\theta]
+            &= \frac{\partial}{\partial\eta}\int{yb(y)\exp(\eta y-a(\eta))\dd{y}}\\
+            &= \int{\frac{\partial}{\partial\eta}yb(y)\exp(\eta y-a(\eta))\dd{y}}\\
+            &= \int yb(y)(y-a'(\eta))\exp(\eta y-a(\eta))\dd{y}\\
+            &= \int{y^2b(y)\exp(\eta y-a(\eta))\dd{y}}
+            -a'(\eta)\int y{b(y)\exp(\eta y-a(\eta))\dd{y}}\\
+            &= \E[Y^2|X;\theta] + \E[Y|X;\theta]^2\\
+            &= \Var[Y^2|X;\theta]
+        \end{aligned}
+    \]
+    And note that $\frac{\partial}{\partial\eta}\E[Y|X;\theta] = a''(\eta)$, therefore,
+    \[
+        \Var[Y|X;\theta] = a''(\eta)
+    \]
+
+    \textbf{(c)}
+    Take one example $(x^{(k)},y^{(k)})$ from the data set, the gradient of the loss function is
+    \[
+    \begin{aligned}
+        \nabla_\theta\ell(\theta) &= -\nabla_\theta \log\left( b(y^{(k)})\exp(\theta^Tx^{(k)} y^{(k)}-a(\theta^Tx^{(k)})) \right)\\
+        &= -\nabla_\theta \left( \log[b(y^{(k)})] + \theta^Tx^{(k)} y^{(k)}-a(\theta^Tx^{(k)}) \right)\\
+        &= -x^{(k)}y^{(k)}+x^{(k)}a'(\eta)
+    \end{aligned}
+    \]
+    Thus, the Hessian is
+    \[
+    \begin{aligned}
+        H &= \nabla_\theta [-x^{(k)}y^{(k)}+x^{(k)}a'(\eta)]\\
+        &= a''(\eta)x^{(k)}(x^{(k)})^T
+    \end{aligned}
+    \]
+
+    For any vector $z$ that has the same dimension as $x$,
+    \[
+    \begin{aligned}
+            z^THz &= \sum_i\sum_jz_iH_{ij}z_j\\
+            &= a''(\eta)\sum_i\sum_jz_ix^{(k)}_ix^{(k)}_jz_j\\
+            &= a''(\eta)\sum_iz_ix^{(k)}_i\sum_jx^{(k)}_jz_j\\
+            &= a''(\eta)(z^Tx^{(k)})^2\\
+            &= (z^Tx^{(k)})^2\Var[Y|X;\theta] \ge 0.
+    \end{aligned}
+    \]
+    Note that $\ell(\theta)=\sum_k\log (-b(y^{(k)})\exp(\theta^Tx^{(k)} y^{(k)}-a(\theta^Tx^{(k)}))$. as each term has a positive Hessian, the sum also has a positive Hessian. That is to say, the loss function $\ell(\theta)$ is PSD.
+\end{homeworkProblem}\newpage
+
+\begin{homeworkProblem}
+    \textbf{(a)}
+    
+    \textbf{i.} Let the matrix $W\in \R^{m\times m}$ be
+    \[
+        W=\mathrm{diag}(w^{(1)}/2, w^{(2)}/2, \cdots, w^{(m)}/2),
+    \]
+    therefore,
+    \[
+    \begin{aligned}
+        J(\theta)=
+    \end{aligned}
+    \]
 \end{homeworkProblem}
 
 \end{document}
