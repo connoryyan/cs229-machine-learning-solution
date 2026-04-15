@@ -522,7 +522,7 @@
             &= (z^Tx^{(k)})^2\Var[Y|X;\theta] \ge 0.
     \end{aligned}
     \]
-    Note that $\ell(\theta)=\sum_k\log (-b(y^{(k)})\exp(\theta^Tx^{(k)} y^{(k)}-a(\theta^Tx^{(k)}))$. as each term has a positive Hessian, the sum also has a positive Hessian. That is to say, the loss function $\ell(\theta)$ is PSD.
+    Note that $\ell(\theta)=\sum_k\log (-b(y^{(k)})\exp(\theta^Tx^{(k)} y^{(k)}-a(\theta^Tx^{(k)}))$. As each term has a positive Hessian, the sum also has a positive Hessian. That is to say, the loss function $\ell(\theta)$ is PSD.
 \end{homeworkProblem}\newpage
 
 \begin{homeworkProblem}
@@ -535,9 +535,60 @@
     therefore,
     \[
     \begin{aligned}
-        J(\theta)=
+        J(\theta)&=\sum_{i = 1} ^ m {
+            (\theta^T x^{(i)} - y^{(i)}) W_{ii} (\theta^T x^{(i)} - y^{(i)})
+        }\\
+        &= \sum_{i = 1} ^ m {
+            \sum_{j = 1} ^ m{
+                (\theta^T x^{(i)} - y^{(i)}) W_{ii} (\theta^T x^{(j)} - y^{(j)})
+            }
+        }\\
+        &= (X\theta-y)^TW(X\theta-y),
     \end{aligned}
     \]
+    where $X\in \R^{m\times n}$ has entries $X_{ij}=x^{(i)}_j$.
+
+    \textbf{ii.}
+    \[
+    \begin{aligned}
+        \nabla_\theta J(\theta)
+        &= \nabla_\theta(X\theta-y)\nabla_{X\theta-y}[(X\theta-y)^TW(X\theta-y)]\\
+        &= X^T(\nabla_{X\theta-y}(X\theta-y)W(X\theta-y)
+        + \nabla_{X\theta-y}[W(X\theta-y)](X\theta-y))\\
+        &= X^T[W(X\theta-y) + W^T(X\theta-y)]\\
+        &= X^T(W+W^T)(X\theta-y)\\
+        &= 2X^TW(X\theta-y), \text{(as W is a diag matrix)}
+    \end{aligned}
+    \]
+    Let
+    \[
+    \begin{aligned}
+        \nabla_\theta J(\theta) &= 0\\
+        X^TWX\theta &= X^TWy\\
+        \theta &= (X^TWX)^{-1}X^TWy
+    \end{aligned}
+    \]
+
+    \textbf{iii.}
+    The log likelihood is
+    \[
+    \begin{aligned}
+        \ell(\theta) &= \log \left( \prod_{i=1}^m{p(y^{(i)}|x^{(i)};\theta)} \right)\\
+        &= \sum_{i=1}^m-\log(\sqrt{2\pi} \sigma^{(i)})
+         - \frac{(y^{(i)}-\theta^Tx^{(i)})^2}{2(\sigma^{(i)})^2}
+    \end{aligned}
+    \]
+    As $-\log(\sqrt{2\pi} \sigma^{(i)})$ term is constant, to maximize the log-likelihood is to minimize
+    \[
+        \frac{1}{2} \sum_{i=1}^m\frac{1}{(\sigma^{(i)})^2}(y^{(i)}-\theta^Tx^{(i)})^2
+    \]
+    Compared with $J(\theta)$, it is clear that
+    \[
+        w^{(i)}=\frac{1}{(\sigma^{(i)})^2}
+    \]
+
+    \textbf{(b)}
+    
 \end{homeworkProblem}
 
 \end{document}
