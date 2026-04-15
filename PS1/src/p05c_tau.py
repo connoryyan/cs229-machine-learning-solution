@@ -44,10 +44,13 @@ def main(tau_values, train_path, valid_path, test_path, pred_path):
 
         mse = np.mean((y_pred - y_valid) ** 2)
         if mse < min_mse:
-            best_tau = mse
+            best_tau = tau
+            min_mse = mse
 
     # Fit a LWR model with the best tau value
     reg.tau = best_tau
+    print("Best tau is", best_tau)
+    print("Minimum MSE is", min_mse)
 
     # Run on the test set to get the MSE value
     y_pred = reg.predict(x_test)
