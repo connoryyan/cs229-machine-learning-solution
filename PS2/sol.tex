@@ -129,8 +129,69 @@
 \pagebreak
 
 \begin{homeworkProblem}
-    \textbf{(a)} Regression on dataset B does not converge.
-    \textbf{(b)} 
+\begin{enumerate}
+    \item[(a)] Regression on dataset B does not converge.
+    
+    \item[(b)] 
+    \begin{figure}[!htbp]
+        \centering
+        \includegraphics[width=0.5\linewidth]{PS2/output/p01_ds1a.png}
+        \caption{Dataset A}
+        \label{fig:dsA}
+    \end{figure}
+    \begin{figure}[!htbp]
+        \centering
+        \includegraphics[width=0.5\linewidth]{PS2/output/p01_ds1b.png}
+        \caption{Dataset B}
+        \label{fig:dsB}
+    \end{figure}
+
+    Notice that dataset B is linearly separable, whereas dataset A is not. The loss function of this logistic regression is
+    \[
+        \ell(\theta)
+        =-\frac{1}{m}\sum_{i=1}^m{\log \left( \frac{1}{1+e^{-y^{(i)}\theta^Tx^{(i)}}} \right) }
+        =\frac{1}{m}\sum_{i=1}^m{\log \left( {1+e^{-y^{(i)}\theta^Tx^{(i)}}} \right) }
+    \]
+    As a negative log-likelihood, this is definitely greater than or equal to zero. However, for linear separable cases, if the fetched $\theta$ is good enough to rightly separate all data points, then this $\theta$ can be scaled up by an arbitrary positive number, and the classification is still right, with a smaller loss function. As $||\theta||\rightarrow\infty$,
+    \[
+        \ell(\theta)\rightarrow
+        \frac{1}{m}\sum_{i=1}^m{\log \left( {1+e^{-\infty}} \right) }\rightarrow
+        0,
+    \]
+    which means there is not a finite $\theta$ that yields to the minimum of $\ell(\theta)$.
+    
+    For non-linear-separable cases, where $y^{(i)}\theta^Tx^{(i)}<0$, terms in the loss function corresponding to data points that cannot be rightly classified are
+    \[
+        \log(1+e^{-y^{(i)}\theta^Tx^{(i)}}),
+    \]
+    As $||\theta||\rightarrow\infty$, 
+    \[
+        \log(1+e^{-y^{(i)}\theta^Tx^{(i)}})\rightarrow\infty
+    \]
+    This indicates there exists a $\theta$ that gives the minimum of the loss function, namely, the gradient descent can converge.
+
+    \item[(c)] 
+
+    \begin{enumerate}
+        \item[i.] No. This is just a part of the gradient descent and does nothing with whether the minimum of the loss function exists.
+    
+        \item[ii.] No. This is just a part of the gradient descent and does nothing with whether the minimum of the loss function exists.
+    
+        \item[iii.] No. This change will not affect whether the dataset is linearly separable or not.
+    
+        \item[iv.] Yes. This can prevent infinitely scaling $\theta$ up to decrease the loss function.
+    
+        \item[v.] Probably would work if the modified dataset becomes non-linear-separable.
+
+    \end{enumerate}
+
+    \item[(d)] No. SVMs minimize $\frac{1}{2}||w||^2$, which punishes inifinitely scaling up of $w$.
+    
+\end{enumerate}
+\end{homeworkProblem}
+
+\begin{homeworkProblem}
+    
 \end{homeworkProblem}
 
 \end{document}
