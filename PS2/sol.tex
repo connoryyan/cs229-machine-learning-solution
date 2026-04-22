@@ -186,12 +186,69 @@
     \end{enumerate}
 
     \item[(d)] No. SVMs minimize $\frac{1}{2}||w||^2$, which punishes inifinitely scaling up of $w$.
-    
 \end{enumerate}
 \end{homeworkProblem}
 
 \begin{homeworkProblem}
+\begin{enumerate}
+    \item [(a)] Logistic regression is to maximise the log-likelihood
+    \[
+        \ell(\theta)=\sum_{i=1}^m{
+            y^{(i)} \log(h_\theta(x^{(i)}))
+            + (1 - y^{(i)}) \log(1 - h_\theta(x^{(i)}))
+        }
+    \]
+    Therefore, after training, it is supposed that
+    \[
+    \begin{aligned}
+        \nabla\ell(\theta)
+        &= \sum_{i=1}^m{
+            [y^{(i)} (1 - h_\theta(x^{(i)})) + (1 - y^{(i)})h_\theta(x^{(i)})]x^{(i)}
+        }\\
+        &= \sum_{i=1}^m{[y^{(i)}-h_\theta(x^{(i)})] x^{(i)}} = 0
+    \end{aligned}
+    \]
+    Thus,
+    \[
+    \begin{aligned}
+        \sum_{i=1}^m{y^{(i)}} - \sum_{i=1}^m{h_\theta(x^{(i)})} &= 0\\
+        \frac{\sum_{i=1}^m{h_\theta(x^{(i)})}}{m} &= \frac{\sum_{i=1}^m{y^{(i)}}}{m}
+    \end{aligned}
+    \]
+    Namely,
+    \[
+        \frac{\sum_{i \in I_{0, 1}} P\left(y^{(i)}=1 \mid x^{(i)} ; \theta\right)}{\left|\left\{i \in I_{0, 1}\right\}\right|}
+        = \frac{\sum_{i \in I_{0, 1}} \mathbf{1}\left\{y^{(i)}=1\right\}}{\left|\left\{i \in I_{0, 1}\right\}\right|}
+    \]
+
+    \item[(b)] Both are not true.
     
+    Consider a set of examples that 70\% of the examples are positive and the hypothesis is 0.7 for all examples. It will perfectly setisfy the property but eventually will predict all examples are positive.
+
+    For the converse, consider a classifier can perfectly classify a dataset with 70\% positive cases, and its hypothesis function equals 0.9 for all positive example and equals 0.1 for all negative examples. Than if we let $(a, b) = (0.5, 1)$, the average hypothesis is 0.9 whereas the frequency of positive example is 1.
+
+    \item[(c)] The log-likelihood with $L_2$ Regularization is
+    \[
+        \ell(\theta)=\left[ \sum_{i=1}^m{
+            y^{(i)} \log(h_\theta(x^{(i)}))
+            + (1 - y^{(i)}) \log(1 - h_\theta(x^{(i)}))
+        } \right]
+        - \lambda||\theta||^2
+    \]
+    An ideally trained model should have the gradient
+    \[
+    \begin{aligned}
+        \nabla\ell(\theta)
+        &= \left[ \sum_{i=1}^m{[y^{(i)}-h_\theta(x^{(i)})] x^{(i)}} \right] - 2\lambda\theta = 0.
+    \end{aligned}
+    \]
+    Hence,
+    \[
+        \frac{\sum_{i=1}^m{h_\theta(x^{(i)})}}{m} \ne \frac{\sum_{i=1}^m{y^{(i)}}}{m},
+    \]
+    It no longer has the peoperty over $(0,1)$.
+    
+\end{enumerate}
 \end{homeworkProblem}
 
 \end{document}
