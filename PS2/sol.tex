@@ -1,0 +1,411 @@
+\documentclass{article}
+
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{extramarks}
+\usepackage{amsmath}
+\usepackage{cleveref}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{tikz}
+\usepackage[plain]{algorithm}
+\usepackage{algpseudocode}
+
+\usetikzlibrary{automata,positioning}
+
+%
+% Basic Document Settings
+%
+
+\topmargin=-0.45in
+\evensidemargin=0in
+\oddsidemargin=0in
+\textwidth=6.5in
+\textheight=9.0in
+\headsep=0.25in
+
+\linespread{1.1}
+
+\pagestyle{fancy}
+\lhead{\hmwkAuthorName}
+\chead{\hmwkClass , \hmwkClassInstructor: \hmwkTitle}
+\rhead{\firstxmark}
+\lfoot{\lastxmark}
+\cfoot{\thepage}
+
+\renewcommand\headrulewidth{0.4pt}
+\renewcommand\footrulewidth{0.4pt}
+
+\setlength\parindent{0pt}
+
+%
+% Create Problem Sections
+%
+
+\newcommand{\enterProblemHeader}[1]{
+    \nobreak\extramarks{}{Problem \arabic{#1} continued on next page\ldots}\nobreak{}
+    \nobreak\extramarks{Problem \arabic{#1} (continued)}{Problem \arabic{#1} continued on next page\ldots}\nobreak{}
+}
+
+\newcommand{\exitProblemHeader}[1]{
+    \nobreak\extramarks{Problem \arabic{#1} (continued)}{Problem \arabic{#1} continued on next page\ldots}\nobreak{}
+    \stepcounter{#1}
+    \nobreak\extramarks{Problem \arabic{#1}}{}\nobreak{}
+}
+
+\setcounter{secnumdepth}{0}
+\newcounter{partCounter}
+\newcounter{homeworkProblemCounter}
+\setcounter{homeworkProblemCounter}{1}
+\nobreak\extramarks{Problem \arabic{homeworkProblemCounter}}{}\nobreak{}
+
+%
+% Homework Problem Environment
+%
+% This environment takes an optional argument. When given, it will adjust the
+% problem counter. This is useful for when the problems given for your
+% assignment aren't sequential. See the last 3 problems of this template for an
+% example.
+%
+\newenvironment{homeworkProblem}[1][-1]{
+    \ifnum#1>0
+        \setcounter{homeworkProblemCounter}{#1}
+    \fi
+    \section{Problem \arabic{homeworkProblemCounter}}
+    \setcounter{partCounter}{1}
+    \enterProblemHeader{homeworkProblemCounter}
+}{
+    \exitProblemHeader{homeworkProblemCounter}
+}
+
+%
+% Homework Details
+%   - Title
+%   - Due date
+%   - Class
+%   - Section/Time
+%   - Instructor
+%   - Author
+%
+
+\newcommand{\hmwkTitle}{Problem Set 2}
+\newcommand{\hmwkClass}{CS229}
+\newcommand{\hmwkClassInstructor}{Prof. Andrew Ng}
+\newcommand{\hmwkAuthorName}{\textbf{Connor Yan}}
+
+%
+% Title Page
+%
+
+\title{
+    \vspace{2in}
+    \textmd{\textbf{\hmwkClass}}\\
+    \textmd{\textbf{\hmwkTitle}}\\
+    \vspace{3in}
+}
+
+\author{\hmwkAuthorName}
+\date{\today}
+
+\renewcommand{\part}[1]{\textbf{\large Part \Alph{partCounter}}\stepcounter{partCounter}\\}
+
+% Alias for the Solution section header
+\newcommand{\solution}{\textbf{\large Solution}}
+
+% Probability commands: Expectation, Variance, Covariance, Bias
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\Bias}{\mathrm{Bias}}
+\newcommand{\dd}{\mathrm{d}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\mb}{\mathrm}
+
+\begin{document}
+
+\maketitle
+
+\pagebreak
+
+\begin{homeworkProblem}
+\begin{enumerate}
+    \item[(a)] Regression on dataset B does not converge.
+    
+    \item[(b)] 
+    \begin{figure}[!htbp]
+        \centering
+        \includegraphics[width=0.5\linewidth]{PS2/output/p01_ds1a.png}
+        \caption{Dataset A}
+        \label{fig:dsA}
+    \end{figure}
+    \begin{figure}[!htbp]
+        \centering
+        \includegraphics[width=0.5\linewidth]{PS2/output/p01_ds1b.png}
+        \caption{Dataset B}
+        \label{fig:dsB}
+    \end{figure}
+
+    Notice that dataset B is linearly separable, whereas dataset A is not. The loss function of this logistic regression is
+    \[
+        \ell(\theta)
+        =-\frac{1}{m}\sum_{i=1}^m{\log \left( \frac{1}{1+e^{-y^{(i)}\theta^Tx^{(i)}}} \right) }
+        =\frac{1}{m}\sum_{i=1}^m{\log \left( {1+e^{-y^{(i)}\theta^Tx^{(i)}}} \right) }
+    \]
+    As a negative log-likelihood, this is definitely greater than or equal to zero. However, for linear separable cases, if the fetched $\theta$ is good enough to rightly separate all data points, then this $\theta$ can be scaled up by an arbitrary positive number, and the classification is still right, with a smaller loss function. As $||\theta||\rightarrow\infty$,
+    \[
+        \ell(\theta)\rightarrow
+        \frac{1}{m}\sum_{i=1}^m{\log \left( {1+e^{-\infty}} \right) }\rightarrow
+        0,
+    \]
+    which means there is not a finite $\theta$ that yields to the minimum of $\ell(\theta)$.
+    
+    For non-linear-separable cases, where $y^{(i)}\theta^Tx^{(i)}<0$, terms in the loss function corresponding to data points that cannot be rightly classified are
+    \[
+        \log(1+e^{-y^{(i)}\theta^Tx^{(i)}}),
+    \]
+    As $||\theta||\rightarrow\infty$, 
+    \[
+        \log(1+e^{-y^{(i)}\theta^Tx^{(i)}})\rightarrow\infty
+    \]
+    This indicates there exists a $\theta$ that gives the minimum of the loss function, namely, the gradient descent can converge.
+
+    \item[(c)] 
+
+    \begin{enumerate}
+        \item[i.] No. This is just a part of the gradient descent and does nothing with whether the minimum of the loss function exists.
+    
+        \item[ii.] No. This is just a part of the gradient descent and does nothing with whether the minimum of the loss function exists.
+    
+        \item[iii.] No. This change will not affect whether the dataset is linearly separable or not.
+    
+        \item[iv.] Yes. This can prevent infinitely scaling $\theta$ up to decrease the loss function.
+    
+        \item[v.] Probably would work if the modified dataset becomes non-linear-separable.
+
+    \end{enumerate}
+
+    \item[(d)] No. SVMs minimize $\frac{1}{2}||w||^2$, which punishes inifinitely scaling up of $w$.
+\end{enumerate}
+\end{homeworkProblem}
+
+\begin{homeworkProblem}
+\begin{enumerate}
+    \item [(a)] Logistic regression is to maximise the log-likelihood
+    \[
+        \ell(\theta)=\sum_{i=1}^m{
+            y^{(i)} \log(h_\theta(x^{(i)}))
+            + (1 - y^{(i)}) \log(1 - h_\theta(x^{(i)}))
+        }
+    \]
+    Therefore, after training, it is supposed that
+    \[
+    \begin{aligned}
+        \nabla\ell(\theta)
+        &= \sum_{i=1}^m{
+            [y^{(i)} (1 - h_\theta(x^{(i)})) + (1 - y^{(i)})h_\theta(x^{(i)})]x^{(i)}
+        }\\
+        &= \sum_{i=1}^m{[y^{(i)}-h_\theta(x^{(i)})] x^{(i)}} = 0
+    \end{aligned}
+    \]
+    Thus,
+    \[
+    \begin{aligned}
+        \sum_{i=1}^m{y^{(i)}} - \sum_{i=1}^m{h_\theta(x^{(i)})} &= 0\\
+        \frac{\sum_{i=1}^m{h_\theta(x^{(i)})}}{m} &= \frac{\sum_{i=1}^m{y^{(i)}}}{m}
+    \end{aligned}
+    \]
+    Namely,
+    \[
+        \frac{\sum_{i \in I_{0, 1}} P\left(y^{(i)}=1 \mid x^{(i)} ; \theta\right)}{\left|\left\{i \in I_{0, 1}\right\}\right|}
+        = \frac{\sum_{i \in I_{0, 1}} \mathbf{1}\left\{y^{(i)}=1\right\}}{\left|\left\{i \in I_{0, 1}\right\}\right|}
+    \]
+
+    \item[(b)] Both are not true.
+    
+    Consider a set of examples where 70\% of the examples are positive, and the hypothesis is 0.7 for all examples. It will perfectly satisfy the property, but eventually will predict that all examples are positive.
+
+    For the converse, consider a classifier that can perfectly classify a dataset with 70\% positive cases, and its hypothesis function equals 0.9 for all positive examples and equals 0.1 for all negative examples. Then if we let $(a, b) = (0.5, 1)$, the average hypothesis is 0.9, whereas the frequency of positive examples is 1.
+
+    \item[(c)] The log-likelihood with $L_2$ Regularization is
+    \[
+        \ell(\theta)=\left[ \sum_{i=1}^m{
+            y^{(i)} \log(h_\theta(x^{(i)}))
+            + (1 - y^{(i)}) \log(1 - h_\theta(x^{(i)}))
+        } \right]
+        - \lambda\|\theta\|^2
+    \]
+    An ideally trained model should have the gradient
+    \[
+    \begin{aligned}
+        \nabla\ell(\theta)
+        &= \left[ \sum_{i=1}^m{[y^{(i)}-h_\theta(x^{(i)})] x^{(i)}} \right] - 2\lambda\theta = 0.
+    \end{aligned}
+    \]
+    Hence,
+    \[
+        \frac{\sum_{i=1}^m{h_\theta(x^{(i)})}}{m} \ne \frac{\sum_{i=1}^m{y^{(i)}}}{m},
+    \]
+    namely, it no longer has the property over $(0,1)$.
+    
+\end{enumerate}
+\end{homeworkProblem}
+
+\begin{homeworkProblem}
+\begin{enumerate}
+    \item [(a)]
+    \[
+    \begin{aligned}
+        p(\theta|x,y) &= \frac{p(y, x | \theta) p(\theta)}{p(y, x)} \\
+        &= \frac{p(y|x,\theta)p(x|\theta)p(\theta)}{p(y|x)p(x)} \\
+        &= \frac{p(y|x,\theta)p(\theta|x)}{p(y|x)}
+    \end{aligned}
+    \]
+    \[
+    \begin{aligned}
+        \theta_\mathrm{MAP}
+        &= \arg \max_\theta p(\theta|x,y) \\
+        &= \arg \max_\theta \frac{p(y|x,\theta)p(\theta|x)}{p(y|x)} \\
+        &= \arg \max_\theta p(y|x,\theta)p(\theta|x)
+    \end{aligned}
+    \]
+    If assuming $p(\theta)=p(\theta|x)$,
+    \[
+        \theta_\mathrm{MAP} = \arg \max_\theta p(y|x,\theta)p(\theta)
+    \]
+
+    \item[(b)]
+    As $\theta \sim \mathcal{N}(0.\eta^2 I)$, 
+    \[
+        p(\theta) = \frac{1}{(2\pi\eta^2)^{n/2}}\exp\left(-\frac{1}{2\eta^2} \|\theta\|^2\right)
+    \]
+    Hence,
+    \[
+    \begin{aligned}
+        \theta_\mathrm{MAP}
+        &= \arg \max_\theta p(y|x,\theta)p(\theta) \\
+        &= \arg \min_\theta -\log{\left[ p(y|x,\theta) \cdot \frac{1}{(2\pi\eta^2)^{n/2}}\exp\left(-\frac{1}{2\eta^2} \|\theta\|^2\right) \right]} \\
+        &= \arg \min_\theta \left[ -\log p(y|x,\theta) - \log\frac{1}{(2\pi\eta^2)^{n/2}} + \frac{1}{2\eta^2} \|\theta\|^2 \right] \\
+        &= \arg \min_\theta \left[ -\log p(y|x,\theta) + \frac{1}{2\eta^2} \|\theta\|^2 \right] \\
+        &= \arg \min_\theta \left[ -\log p(y|x,\theta) + \lambda \|\theta\|^2 \right],
+    \end{aligned}
+    \]
+    where $\lambda = \frac{1}{2\eta^2}$.
+
+    \item[(c)] Consider the loss function
+    \[
+    \begin{aligned}
+        \ell(\theta) &= -\log p(y|X,\theta) + \lambda \|\theta\|^2
+    \end{aligned}
+    \]
+    Note that $y \sim \mathcal{N}(X\theta, \sigma^2 I)$. Therefore,
+    \[
+    \begin{aligned}
+        \ell(\theta) &= -\log\left[ \frac{1}{(2\pi\sigma^2)^{n/2}}\exp\left(-\frac{1}{2\sigma^2} \|y - X\theta\|^2\right) \right] + \lambda \|\theta\|^2 \\
+        &= -\log \frac{1}{(2\pi\sigma^2)^{n/2}} + \frac{1}{2\sigma^2} \|y - X\theta\|^2 + \lambda \|\theta\|^2
+    \end{aligned}
+    \]
+    MAP estimation is to minimize $\ell(\theta)$, which is achieved when
+    \[
+    \begin{aligned}
+        \nabla\ell(\theta) &= \frac{1}{2\sigma^2} \nabla \|y - X\theta\|^2 + \lambda \nabla \|\theta\|^2\\
+        &= \frac{1}{\sigma^2} X^T(X\theta - y) + 2\lambda \theta = 0
+    \end{aligned}
+    \]
+    Thus,
+    \[
+    \begin{aligned}
+        \frac{1}{\sigma^2}X^TX\theta_\mathrm{MAP}+2\lambda\theta_\mathrm{MAP} &= \frac{1}{\sigma^2} X^T y\\
+        ( X^TX+2\lambda \sigma^2 I)\theta_\mathrm{MAP} &= X^T y \\
+        \theta_\mathrm{MAP} &= ( X^TX+2\lambda \sigma^2 I)^{-1} X^T y
+    \end{aligned}
+    \]
+
+    \item[(d)] 
+    \[
+    \begin{aligned}
+        \theta_\mathrm{MAP} &= \arg \min_\theta \left[ -\log \left[ \frac{1}{(2\pi\sigma^2)^{n/2}}\exp\left(-\frac{1}{2\sigma^2} \|y - X\theta\|_2^2\right) \right]
+        - \log \left[ \frac{1}{2b} \exp \left( -\frac{\|\theta\|_1}{b} \right) \right] \right] \\
+        &= \arg \min_\theta \left( \frac{1}{2\sigma^2} \|y - X\theta\|_2^2
+        + \frac{\|\theta\|_1}{b} \right) \\
+        &= \arg \min_\theta \left( \|y - X\theta\|_2^2
+        + \frac{2\sigma^2}{b} \|\theta\|_1 \right) \\
+        &= \arg \min_\theta J(\theta),
+    \end{aligned}
+    \]
+    where $J(\theta) = \|y - X\theta\|_2^2
+        + \lambda \|\theta\|_1$ and $\lambda = \frac{2\sigma^2}{b}$.
+\end{enumerate}
+\end{homeworkProblem}
+
+\begin{homeworkProblem}
+\begin{enumerate}
+    \item[(a)] Consider $K \in \mathbb{R}^{n \times n}$ which satisfies
+    \[
+        K = K_1 + K_2
+    \]
+    Let $z \in \R^n$ be an arbitrary vector. 
+    \[
+    \begin{aligned}
+        z^T K z = z^T (K_1+K_2) z = z^T K_1 z + z^T K_2 z \ge 0
+    \end{aligned}
+    \]
+    as $K_1$ and $K_2$ are both PSD. Hence $K$ is PSD, namely, $K(x, z)$ is a kernel.
+
+    \item[(b)] Similarly to (a),
+    \[
+        z^T K z = z^T K_1 z - z^T K_2 z,
+    \]
+    which is not necessarily greater than or equal to zero. Hence, $K$ is not necessarily PSD, and therefore, the function $K$ is not necessarily a kernel.
+
+    \item[(c)] 
+    \[
+        z^T K z = a z^T K_1 z
+    \]
+    where $a \in \R^+$. Hence, $K(x,z)$ is a kernel since $K$ is PSD.
+
+    \item[(d)]
+    Similarly to (c), $K(x,z)$ is not a kernel since $K$ is not PSD.
+
+    \item[(e)]
+    \[
+    \begin{aligned}
+        w^T K w &= w^T (K_1 \odot K_2) w \\
+        &= \sum_i \sum_j w_i K_1(x^{(i)}, x^{(j)}) K_2(x^{(i)}, x^{(j)}) w_j \\
+        &= \sum_i \sum_j w_i \phi_1^T(x^{(i)})\phi_1(x^{(j)}) \phi_2^T(^{(i)})\phi_2(x^{(j)}) w_j \\
+        &= \sum_i \sum_j w_i w_j \sum_k \phi_{1,k}(x^{(i)}) \phi_{1,k}(x^{(j)}) \sum_l \phi_{2,l}(x^{(i)}) \phi_{2, l}(x^{(j)})\\
+        &= \sum_k \sum_l \sum_i \sum_j w_i w_j \phi_{1,k}(x^{(i)}) \phi_{1,k}(x^{(j)}) \phi_{2,l}(x^{(i)}) \phi_{2, l}(x^{(j)}) \\
+        &= \sum_k \sum_l \left( \sum_i w_i \phi_{1,k}(x^{(i)}) \phi_{2,l}(x^{(i)}) \right)
+        \left( \sum_j w_j \phi_{1,k}(x^{(j)}) \phi_{2,l}(x^{(j)}) \right) \\
+        &= \sum_k \sum_l \left( \sum_i w_i \phi_{1,k}(x^{(i)}) \phi_{2,l}(x^{(i)}) \right)^2 \ge 0
+    \end{aligned}
+    \]
+    Hence, $K \succeq 0$, and therefore $K(x,z)$ is a kernel.
+
+    \item[(f)]
+    \[
+    \begin{aligned}
+        z^T K z &= \sum_i \sum_j z_i f(x^{(i)})f(x^{(j)})z_j \\
+        &= \left( \sum_i z_i f(x^{(i)}) \right)^2 \ge 0
+    \end{aligned}
+    \]
+    Hence, $K \succeq 0$, and therefore $K(x,z)$ is a kernel.
+
+    \item[(g)]
+    As $K_3(x, z)$ itself is a valid kernel and we just change $x$ and $z$ to $\phi(x)$ and $\phi(z)$, $K(x,z)$ is a kernel.
+
+    \item[(h)] Let
+    \[
+        p(x) = \sum_i a_ix^i
+    \]
+    where $a_i \in [0,\infty)$. Hence,
+    \[
+        K(x, z) = \sum_ia_iK_1^i(x,z)
+    \]
+    From (e) it is known that the product of valid kernels is still a valid kernel, so $K_1^i(x,z)$ is a kernerl. From (c) it is known that a kernel times a positive real number is still a kernel, so $a_iK_1^i(x,z)$ is a kernel. From (a) it is known that the sum of kernels is kernel, so $K(x, z) = \sum_ia_iK_1^i(x,z)$ is a kernel.
+    
+    
+\end{enumerate}
+\end{homeworkProblem}
+
+\end{document}
