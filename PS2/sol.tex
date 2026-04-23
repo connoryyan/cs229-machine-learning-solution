@@ -223,9 +223,9 @@
 
     \item[(b)] Both are not true.
     
-    Consider a set of examples that 70\% of the examples are positive and the hypothesis is 0.7 for all examples. It will perfectly setisfy the property but eventually will predict all examples are positive.
+    Consider a set of examples where 70\% of the examples are positive, and the hypothesis is 0.7 for all examples. It will perfectly satisfy the property, but eventually will predict that all examples are positive.
 
-    For the converse, consider a classifier can perfectly classify a dataset with 70\% positive cases, and its hypothesis function equals 0.9 for all positive example and equals 0.1 for all negative examples. Than if we let $(a, b) = (0.5, 1)$, the average hypothesis is 0.9 whereas the frequency of positive example is 1.
+    For the converse, consider a classifier that can perfectly classify a dataset with 70\% positive cases, and its hypothesis function equals 0.9 for all positive examples and equals 0.1 for all negative examples. Then if we let $(a, b) = (0.5, 1)$, the average hypothesis is 0.9, whereas the frequency of positive examples is 1.
 
     \item[(c)] The log-likelihood with $L_2$ Regularization is
     \[
@@ -233,7 +233,7 @@
             y^{(i)} \log(h_\theta(x^{(i)}))
             + (1 - y^{(i)}) \log(1 - h_\theta(x^{(i)}))
         } \right]
-        - \lambda||\theta||^2
+        - \lambda\|\theta\|^2
     \]
     An ideally trained model should have the gradient
     \[
@@ -246,9 +246,95 @@
     \[
         \frac{\sum_{i=1}^m{h_\theta(x^{(i)})}}{m} \ne \frac{\sum_{i=1}^m{y^{(i)}}}{m},
     \]
-    It no longer has the peoperty over $(0,1)$.
+    namely, it no longer has the property over $(0,1)$.
     
 \end{enumerate}
 \end{homeworkProblem}
 
+\begin{homeworkProblem}
+\begin{enumerate}
+    \item [(a)]
+    \[
+    \begin{aligned}
+        p(\theta|x,y) &= \frac{p(y, x | \theta) p(\theta)}{p(y, x)} \\
+        &= \frac{p(y|x,\theta)p(x|\theta)p(\theta)}{p(y|x)p(x)} \\
+        &= \frac{p(y|x,\theta)p(\theta|x)}{p(y|x)}
+    \end{aligned}
+    \]
+    \[
+    \begin{aligned}
+        \theta_\mathrm{MAP}
+        &= \arg \max_\theta p(\theta|x,y) \\
+        &= \arg \max_\theta \frac{p(y|x,\theta)p(\theta|x)}{p(y|x)} \\
+        &= \arg \max_\theta p(y|x,\theta)p(\theta|x)
+    \end{aligned}
+    \]
+    If assuming $p(\theta)=p(\theta|x)$,
+    \[
+        \theta_\mathrm{MAP} = \arg \max_\theta p(y|x,\theta)p(\theta)
+    \]
+
+    \item[(b)]
+    As $\theta \sim \mathcal{N}(0.\eta^2 I)$, 
+    \[
+        p(\theta) = \frac{1}{(2\pi\eta^2)^{n/2}}\exp\left(-\frac{1}{2\eta^2} \|\theta\|^2\right)
+    \]
+    Hence,
+    \[
+    \begin{aligned}
+        \theta_\mathrm{MAP}
+        &= \arg \max_\theta p(y|x,\theta)p(\theta) \\
+        &= \arg \min_\theta -\log{\left[ p(y|x,\theta) \cdot \frac{1}{(2\pi\eta^2)^{n/2}}\exp\left(-\frac{1}{2\eta^2} \|\theta\|^2\right) \right]} \\
+        &= \arg \min_\theta \left[ -\log p(y|x,\theta) - \log\frac{1}{(2\pi\eta^2)^{n/2}} + \frac{1}{2\eta^2} \|\theta\|^2 \right] \\
+        &= \arg \min_\theta \left[ -\log p(y|x,\theta) + \frac{1}{2\eta^2} \|\theta\|^2 \right] \\
+        &= \arg \min_\theta \left[ -\log p(y|x,\theta) + \lambda \|\theta\|^2 \right],
+    \end{aligned}
+    \]
+    where $\lambda = \frac{1}{2\eta^2}$.
+
+    \item[(c)] Consider the loss function
+    \[
+    \begin{aligned}
+        \ell(\theta) &= -\log p(y|X,\theta) + \lambda \|\theta\|^2
+    \end{aligned}
+    \]
+    Note that $y \sim \mathcal{N}(X\theta, \sigma^2 I)$. Therefore,
+    \[
+    \begin{aligned}
+        \ell(\theta) &= -\log\left[ \frac{1}{(2\pi\sigma^2)^{n/2}}\exp\left(-\frac{1}{2\sigma^2} \|y - X\theta\|^2\right) \right] + \lambda \|\theta\|^2 \\
+        &= -\log \frac{1}{(2\pi\sigma^2)^{n/2}} + \frac{1}{2\sigma^2} \|y - X\theta\|^2 + \lambda \|\theta\|^2
+    \end{aligned}
+    \]
+    MAP estimation is to minimize $\ell(\theta)$, which is achieved when
+    \[
+    \begin{aligned}
+        \nabla\ell(\theta) &= \frac{1}{2\sigma^2} \nabla \|y - X\theta\|^2 + \lambda \nabla \|\theta\|^2\\
+        &= \frac{1}{\sigma^2} X^T(X\theta - y) + 2\lambda \theta = 0
+    \end{aligned}
+    \]
+    Thus,
+    \[
+    \begin{aligned}
+        \frac{1}{\sigma^2}X^TX\theta_\mathrm{MAP}+2\lambda\theta_\mathrm{MAP} &= \frac{1}{\sigma^2} X^T y\\
+        ( X^TX+2\lambda \sigma^2 I)\theta_\mathrm{MAP} &= X^T y \\
+        \theta_\mathrm{MAP} &= ( X^TX+2\lambda \sigma^2 I)^{-1} X^T y
+    \end{aligned}
+    \]
+
+    \item[(d)] 
+    \[
+    \begin{aligned}
+        \theta_\mathrm{MAP} &= \arg \min_\theta \left[ -\log \left[ \frac{1}{(2\pi\sigma^2)^{n/2}}\exp\left(-\frac{1}{2\sigma^2} \|y - X\theta\|_2^2\right) \right]
+        - \log \left[ \frac{1}{2b} \exp \left( -\frac{\|\theta\|_1}{b} \right) \right] \right] \\
+        &= \arg \min_\theta \left( \frac{1}{2\sigma^2} \|y - X\theta\|_2^2
+        + \frac{\|\theta\|_1}{b} \right) \\
+        &= \arg \min_\theta \left( \|y - X\theta\|_2^2
+        + \frac{2\sigma^2}{b} \|\theta\|_1 \right) \\
+        &= \arg \min_\theta J(\theta),
+    \end{aligned}
+    \]
+    where $J(\theta) = \|y - X\theta\|_2^2
+        + \lambda \|\theta\|_1$ and $\lambda = \frac{2\sigma^2}{b}$.
+\end{enumerate}
+\end{homeworkProblem}
 \end{document}
