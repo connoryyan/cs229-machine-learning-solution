@@ -438,8 +438,28 @@
             - \mathbf{1} \left\{ \sum_{j=1}^i\alpha \left( y^{(j)} - h_{\theta^{(j-1)}} ( x^{(j)}) \right) K(x^{(j)},x^{(i+1)}) \ge 0 \right\} \right) x^{(i+1)}
         \end{aligned}
         \]
-    \item[(b)]
+    \item[(b)] See the code.
+    \item[(c)] 
+
+    \begin{figure}[!ht]
+        \centering
+        \includegraphics[width=0.5\linewidth]{PS2/output/p05_dot_output.png}
+        \caption{Kernelized perceptron with dot product kernel}
+        \label{fig:dot_kernel}
+    \end{figure}
+    \begin{figure}[!ht]
+        \centering
+        \includegraphics[width=0.5\linewidth]{PS2/output/p05_rbf_output.png}
+        \caption{Kernelized perceptron with RBF kernel}
+        \label{fig:rbf_kernel}
+    \end{figure}
+
+    Obviously dot product kernel has much poorer performance since it is essentially linear and this dataset is non-linear-separable (see \Cref{fig:dot_kernel,fig:rbf_kernel}).
 \end{enumerate}
+\end{homeworkProblem}
+
+\begin{homeworkProblem}
+    
 \end{homeworkProblem}
 
 \end{document}
