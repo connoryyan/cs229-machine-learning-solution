@@ -402,9 +402,43 @@
     \[
         K(x, z) = \sum_ia_iK_1^i(x,z)
     \]
-    From (e) it is known that the product of valid kernels is still a valid kernel, so $K_1^i(x,z)$ is a kernerl. From (c) it is known that a kernel times a positive real number is still a kernel, so $a_iK_1^i(x,z)$ is a kernel. From (a) it is known that the sum of kernels is kernel, so $K(x, z) = \sum_ia_iK_1^i(x,z)$ is a kernel.
-    
-    
+    From (e), it is known that the product of valid kernels is still a valid kernel, so $K_1^i(x,z)$ is a kernel. From (c), it is known that a kernel times a positive real number is still a kernel, so $a_iK_1^i(x,z)$ is a kernel. From (a), it is known that the sum of kernels is a kernel, so $K(x, z) = \sum_ia_iK_1^i(x,z)$ is a kernel.
+\end{enumerate}
+\end{homeworkProblem}
+
+\begin{homeworkProblem}
+\begin{enumerate}
+    \item[(a)]
+        \item[i.] From the update rule, we know
+        \[
+            \theta^{(i)} = \sum_{j=1}^i\alpha \left( y^{(j)} - h_{\theta^{(j-1)}} ( x^{(j)}) \right) \phi(x^{(j)})
+        \]
+        And we might represent the initial value with
+        \[
+            \theta^{(0)} = \sum_{j=1}^0\alpha \left( y^{(j)} - h_{\theta^{(j-1)}} ( x^{(j)}) \right) \phi(x^{(j)}) = 0
+        \]
+
+        \item[ii.]
+        \[
+        \begin{aligned}
+            h_{\theta^{(i)}}(x^{(i+1)}) &= g \left( (\theta^{(i)})^T \phi(x^{(i+1)}) \right) \\
+            &= g \left( \left( \sum_{j=1}^i\alpha \left( y^{(j)} - h_{\theta^{(j-1)}} ( x^{(j)}) \right) \phi(x^{(j)}) \right)^T \phi(x^{(i+1)}) \right) \\
+            &= g \left( \sum_{j=1}^i\alpha \left( y^{(j)} - h_{\theta^{(j-1)}} ( x^{(j)}) \right) \phi(x^{(j)})^T \phi(x^{(i+1)}) \right) \\
+            &= g \left( \sum_{j=1}^i\alpha \left( y^{(j)} - h_{\theta^{(j-1)}} ( x^{(j)}) \right) K(x^{(j)},x^{(i+1)}) \right) \\
+            &= \mathbf{1} \left\{ \sum_{j=1}^i\alpha \left( y^{(j)} - h_{\theta^{(j-1)}} ( x^{(j)}) \right) K(x^{(j)},x^{(i+1)}) \ge 0 \right\}
+        \end{aligned}
+        \]
+
+        \item[iii.]
+        \[
+        \begin{aligned}
+            &\theta^{(i+1)} := \theta^{(i)} + \alpha\left( y^{(i+1)} - h_{\theta^{(i)}}(x^{(i+1)}) \right) x^{(i+1)} \\
+            &= \sum_{j=1}^i\alpha \left( y^{(j)} - h_{\theta^{(j-1)}} ( x^{(j)}) \right) \phi(x^{(j)})
+             + \alpha\left( y^{(i+1)}
+            - \mathbf{1} \left\{ \sum_{j=1}^i\alpha \left( y^{(j)} - h_{\theta^{(j-1)}} ( x^{(j)}) \right) K(x^{(j)},x^{(i+1)}) \ge 0 \right\} \right) x^{(i+1)}
+        \end{aligned}
+        \]
+    \item[(b)]
 \end{enumerate}
 \end{homeworkProblem}
 
