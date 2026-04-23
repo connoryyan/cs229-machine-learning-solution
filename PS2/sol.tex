@@ -337,4 +337,75 @@
         + \lambda \|\theta\|_1$ and $\lambda = \frac{2\sigma^2}{b}$.
 \end{enumerate}
 \end{homeworkProblem}
+
+\begin{homeworkProblem}
+\begin{enumerate}
+    \item[(a)] Consider $K \in \mathbb{R}^{n \times n}$ which satisfies
+    \[
+        K = K_1 + K_2
+    \]
+    Let $z \in \R^n$ be an arbitrary vector. 
+    \[
+    \begin{aligned}
+        z^T K z = z^T (K_1+K_2) z = z^T K_1 z + z^T K_2 z \ge 0
+    \end{aligned}
+    \]
+    as $K_1$ and $K_2$ are both PSD. Hence $K$ is PSD, namely, $K(x, z)$ is a kernel.
+
+    \item[(b)] Similarly to (a),
+    \[
+        z^T K z = z^T K_1 z - z^T K_2 z,
+    \]
+    which is not necessarily greater than or equal to zero. Hence, $K$ is not necessarily PSD, and therefore, the function $K$ is not necessarily a kernel.
+
+    \item[(c)] 
+    \[
+        z^T K z = a z^T K_1 z
+    \]
+    where $a \in \R^+$. Hence, $K(x,z)$ is a kernel since $K$ is PSD.
+
+    \item[(d)]
+    Similarly to (c), $K(x,z)$ is not a kernel since $K$ is not PSD.
+
+    \item[(e)]
+    \[
+    \begin{aligned}
+        w^T K w &= w^T (K_1 \odot K_2) w \\
+        &= \sum_i \sum_j w_i K_1(x^{(i)}, x^{(j)}) K_2(x^{(i)}, x^{(j)}) w_j \\
+        &= \sum_i \sum_j w_i \phi_1^T(x^{(i)})\phi_1(x^{(j)}) \phi_2^T(^{(i)})\phi_2(x^{(j)}) w_j \\
+        &= \sum_i \sum_j w_i w_j \sum_k \phi_{1,k}(x^{(i)}) \phi_{1,k}(x^{(j)}) \sum_l \phi_{2,l}(x^{(i)}) \phi_{2, l}(x^{(j)})\\
+        &= \sum_k \sum_l \sum_i \sum_j w_i w_j \phi_{1,k}(x^{(i)}) \phi_{1,k}(x^{(j)}) \phi_{2,l}(x^{(i)}) \phi_{2, l}(x^{(j)}) \\
+        &= \sum_k \sum_l \left( \sum_i w_i \phi_{1,k}(x^{(i)}) \phi_{2,l}(x^{(i)}) \right)
+        \left( \sum_j w_j \phi_{1,k}(x^{(j)}) \phi_{2,l}(x^{(j)}) \right) \\
+        &= \sum_k \sum_l \left( \sum_i w_i \phi_{1,k}(x^{(i)}) \phi_{2,l}(x^{(i)}) \right)^2 \ge 0
+    \end{aligned}
+    \]
+    Hence, $K \succeq 0$, and therefore $K(x,z)$ is a kernel.
+
+    \item[(f)]
+    \[
+    \begin{aligned}
+        z^T K z &= \sum_i \sum_j z_i f(x^{(i)})f(x^{(j)})z_j \\
+        &= \left( \sum_i z_i f(x^{(i)}) \right)^2 \ge 0
+    \end{aligned}
+    \]
+    Hence, $K \succeq 0$, and therefore $K(x,z)$ is a kernel.
+
+    \item[(g)]
+    As $K_3(x, z)$ itself is a valid kernel and we just change $x$ and $z$ to $\phi(x)$ and $\phi(z)$, $K(x,z)$ is a kernel.
+
+    \item[(h)] Let
+    \[
+        p(x) = \sum_i a_ix^i
+    \]
+    where $a_i \in [0,\infty)$. Hence,
+    \[
+        K(x, z) = \sum_ia_iK_1^i(x,z)
+    \]
+    From (e) it is known that the product of valid kernels is still a valid kernel, so $K_1^i(x,z)$ is a kernerl. From (c) it is known that a kernel times a positive real number is still a kernel, so $a_iK_1^i(x,z)$ is a kernel. From (a) it is known that the sum of kernels is kernel, so $K(x, z) = \sum_ia_iK_1^i(x,z)$ is a kernel.
+    
+    
+\end{enumerate}
+\end{homeworkProblem}
+
 \end{document}
