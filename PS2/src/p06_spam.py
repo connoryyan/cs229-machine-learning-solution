@@ -20,8 +20,7 @@ def get_words(message):
        The list of normalized words from the message.
     """
 
-    # *** START CODE HERE ***
-    # *** END CODE HERE ***
+    return message.lower().split()
 
 
 def create_dictionary(messages):
@@ -40,8 +39,25 @@ def create_dictionary(messages):
         A python dict mapping words to integers.
     """
 
-    # *** START CODE HERE ***
-    # *** END CODE HERE ***
+    dic = {}
+    dic_count = {}
+    tot = 0
+
+    for message in messages:
+        words = get_words(message)
+        for word in words:
+            if dic_count.get(word) is None:
+                dic_count[word] = 1
+            else:
+                dic_count[word] += 1
+
+    for word, cnt in dic_count.items():
+        if cnt >= 5:
+            dic[word] = tot
+            tot += 1
+
+    return dic
+
 
 
 def transform_text(messages, word_dictionary):
@@ -61,9 +77,19 @@ def transform_text(messages, word_dictionary):
     Returns:
         A numpy array marking the words present in each message.
     """
-    # *** START CODE HERE ***
-    # *** END CODE HERE ***
+    
+    m = len(messages)
+    n = len(word_dictionary)
 
+    messages_arr = np.zeros([m,n])
+
+    for i in range(m):
+        words = get_words(messages[i])
+        for word in words:
+            if word_dictionary.get(word) == None: continue
+            messages_arr[i][word_dictionary[word]] += 1
+
+    return messages_arr
 
 def fit_naive_bayes_model(matrix, labels):
     """Fit a naive bayes model.
@@ -138,17 +164,17 @@ def compute_best_svm_radius(train_matrix, train_labels, val_matrix, val_labels, 
 
 
 def main():
-    train_messages, train_labels = util.load_spam_dataset('../data/ds6_train.tsv')
-    val_messages, val_labels = util.load_spam_dataset('../data/ds6_val.tsv')
-    test_messages, test_labels = util.load_spam_dataset('../data/ds6_test.tsv')
+    train_messages, train_labels = util.load_spam_dataset('./PS2/data/ds6_train.tsv')
+    val_messages, val_labels = util.load_spam_dataset('./PS2/data/ds6_val.tsv')
+    test_messages, test_labels = util.load_spam_dataset('./PS2/data/ds6_test.tsv')
     
     dictionary = create_dictionary(train_messages)
 
-    util.write_json('./output/p06_dictionary', dictionary)
+    util.write_json('./PS2/output/p06_dictionary', dictionary)
 
     train_matrix = transform_text(train_messages, dictionary)
 
-    np.savetxt('./output/p06_sample_train_matrix', train_matrix[:100,:])
+    np.savetxt('./PS2/output/p06_sample_train_matrix', train_matrix[:100,:])
 
     val_matrix = transform_text(val_messages, dictionary)
     test_matrix = transform_text(test_messages, dictionary)
@@ -157,7 +183,7 @@ def main():
 
     naive_bayes_predictions = predict_from_naive_bayes_model(naive_bayes_model, test_matrix)
 
-    np.savetxt('./output/p06_naive_bayes_predictions', naive_bayes_predictions)
+    np.savetxt('./PS2/output/p06_naive_bayes_predictions', naive_bayes_predictions)
 
     naive_bayes_accuracy = np.mean(naive_bayes_predictions == test_labels)
 
@@ -167,11 +193,11 @@ def main():
 
     print('The top 5 indicative words for Naive Bayes are: ', top_5_words)
 
-    util.write_json('./output/p06_top_indicative_words', top_5_words)
+    util.write_json('./PS2/output/p06_top_indicative_words', top_5_words)
 
     optimal_radius = compute_best_svm_radius(train_matrix, train_labels, val_matrix, val_labels, [0.01, 0.1, 1, 10])
 
-    util.write_json('./output/p06_optimal_radius', optimal_radius)
+    util.write_json('./PS2/output/p06_optimal_radius', optimal_radius)
 
     print('The optimal SVM radius was {}'.format(optimal_radius))
 
