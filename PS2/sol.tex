@@ -454,12 +454,161 @@
         \label{fig:rbf_kernel}
     \end{figure}
 
-    Obviously dot product kernel has much poorer performance since it is essentially linear and this dataset is non-linear-separable (see \Cref{fig:dot_kernel,fig:rbf_kernel}).
+    Obviously, the dot product kernel has much poorer performance since it is essentially linear and this dataset is non-linear-separable (see \Cref{fig:dot_kernel,fig:rbf_kernel}).
 \end{enumerate}
 \end{homeworkProblem}
 
 \begin{homeworkProblem}
-    
+\begin{enumerate}
+    \item[(a)] See the code.
+    \item[(b)] Consider an SMS as a vector $x\in\R^n$ that records the number of times each word in the dictionary appears. The assumption of Naive Bayes is
+    \[
+    \begin{aligned}
+        p(x_1,\cdots,x_n|y) &= \prod_{i=1}^n{p(x_i|y)} 
+    \end{aligned}
+    \]
+
+    We assume a multinomial distribution of $x$. Hence, the likelihood is
+    \[
+    \begin{aligned}
+        \mathcal{L}(\phi,\phi_{j|y=0},\phi_{j|y=1})
+        &= \prod_{i=1}^m{p(x^{(i)},y^{(i)}}) \\
+        &= \prod_{i=1}^m{
+            \left(
+            \frac{N^{(i)}!}{\prod_{j}x^{(i)}_j!}
+            \prod_{j=1}^n{
+                \phi_{j|y^{(i)}}^{x^{(i)}_j}
+            } \right)
+            p(y^{(i)};\phi_y)
+        }
+    \end{aligned}
+    \]
+    To maximize the log-likelihood is to maximize
+    \[
+    \begin{aligned}
+        \ell(\phi_y,\phi_{j|y=0},\phi_{j|y=1})
+        &= \sum_{i=1}^m
+        y^{(i)}\log(\phi_y)
+        + (1-y^{(i)})\log(1-\phi_y)
+        + \sum_{j=1}^n
+        x^{(i)}_j\log(\phi_{j|y^{(i)}})
+    \end{aligned}
+    \]
+    Additionally, we have the constraint
+    \[
+        \sum_j \phi_{j|y=1} = 1; \ 
+        \sum_j \phi_{j|y=0} = 1
+    \]
+    Consider all terms with $y^{(i)}=1$. The Lagrangian is
+    \[
+    \begin{aligned}
+        \mathcal{L}(\lambda,\phi_{j|y=1} ) &=
+        -\lambda \left(1 - \sum_j \phi_{j|y=1} \right)
+        + \sum_{i=1}^m\log\phi_y+y^{(i)}\sum_{j=1}^n
+        x^{(i)}_j\log(\phi_{j|y=1})
+    \end{aligned}
+    \]
+    Let its gradient equal zero to maximize $\ell$:
+    \[
+    \begin{aligned}
+        \nabla\mathcal{L}(\lambda,\phi_{j|y=1} ) &= 0 \\
+        \sum_{i=1}^m y^{(i)} \cdot
+        \frac{x^{(i)}_j}{\phi_{j|y=1}} &= \lambda \\
+        \phi_{j|y=1} &= \frac{1}{\lambda} \sum_{i=1}^m y^{(i)} x^{(i)}_j
+    \end{aligned}
+    \]
+    Note that
+    \[
+    \begin{aligned}
+        \sum_j {\phi_{j|y=1}} &= 1\\
+        \frac{1}{\lambda} \sum_{i=1}^m \sum_{j=1}^n y^{(i)} x^{(i)}_j &= 1 \\
+        \lambda &= \sum_{i=1}^m \sum_{j=1}^n y^{(i)} x^{(i)}_j
+    \end{aligned}
+    \]
+    Hence,
+    \[
+    \begin{aligned}
+        \phi_{j|y=1}
+        &= \frac{\sum_{i=1}^m y^{(i)} x^{(i)}_j}
+            {\sum_{i=1}^m \sum_{j=1}^n y^{(i)} x^{(i)}_j}
+    \end{aligned}
+    \]
+    Consider the Laplace smoothing, 
+    \[
+        \phi_{j|y=1}
+        = \frac{1 + \sum_{i=1}^m y^{(i)} x^{(i)}_j}
+            {n + \sum_{i=1}^m \sum_{j=1}^n y^{(i)} x^{(i)}_j}
+    \]
+    Similarly, $\phi_{j|y=0}$ can be written as
+    \[
+        \phi_{j|y=0}
+        = \frac{1 + \sum_{i=1}^m (1-y^{(i)}) x^{(i)}_j}
+            {n + \sum_{i=1}^m \sum_{j=1}^n (1-y^{(i)}) x^{(i)}_j}
+    \]
+    Consider maximize the likelihood w.r.t. $\phi$, which is to maximize
+    \[
+    \begin{aligned}
+        \ell(\lambda,\phi_y) &=
+        \sum_{i=1}^m y^{(i)}\log\phi_y + (1-y^{(i)})\log(1-\phi_y),
+    \end{aligned}
+    \]
+    Let its gradient equal zero:
+    \[
+    \begin{aligned}
+        \nabla \mathcal{L}(\lambda,\phi_y) &= 0 \\
+        \sum_{i=1}^m \frac{y^{(i)}}{\phi_y} &= \sum_{i=1}^m\frac{1-y^{(i)}}{1-\phi_y} \\
+        \sum_{i=1}^m \phi_y &= \sum_{i=1}^m y^{(i)} \\
+        \phi_y &= \frac{\sum_{i=1}^m y^{(i)}}{m}
+    \end{aligned}
+    \]
+    Finally, if let the length of the $i$th message be $N^{(i)}$ words, the probability of spam is
+    \[
+    \begin{aligned}
+        p(y^{(i)}=1|x) &= \frac{p(x^{(i)}|y^{(i)}=1)p(y^{(i)}=1)}{p(x^{(i)}|y^{(i)}=1)p(y^{(i)}=1)+p(x^{(i)}|y^{(i)}=0)p(y^{(i)}=0)}\\
+        &= \frac{
+        \left( \frac{N^{(i)}!}{\prod_{j=1}^n x^{(i)}_j!}
+        \prod_{j=1}^n \phi_{j|y=1}^{x^{(i)}_j} \right) \phi_y}
+        {\left( \frac{N^{(i)}!}{\prod_{j=1}^n x^{(i)}_j!}
+        \prod_{j=1}^n \phi_{j|y=1}^{x^{(i)}_j} \right) \phi_y
+        + \left( \frac{N^{(i)}!}{\prod_{j=1}^n x^{(i)}_j!}
+        \prod_{j=1}^n \phi_{j|y=0}^{x^{(i)}_j} \right) (1-\phi_y)} \\
+        &= \frac{
+        \left(
+        \prod_{j=1}^n \phi_{j|y=1}^{x^{(i)}_j} \right) \phi_y}
+        {\left(
+        \prod_{j=1}^n \phi_{j|y=1}^{x^{(i)}_j} \right) \phi_y
+        +
+        \left(
+        \prod_{j=1}^n \phi_{j|y=0}^{x^{(i)}_j} \right) (1-\phi_y)}
+    \end{aligned}
+    \]
+    To avoid underflow, instead of calculating this straightaway, we use
+    \[
+    \begin{aligned}
+        \log \frac{p(y^{(i)}=0|x^{(i)})}{p(y^{(i)}=1|x^{(i)})} &= 
+        \log \left(
+        \frac{\left(
+        \prod_{j=1}^n \phi_{j|y=0}^{x^{(i)}_j} \right) (1-\phi_y)}  
+        {\left(
+        \prod_{j=1}^n \phi_{j|y=1}^{x^{(i)}_j} \right) \phi_y   } \right) \\
+        &= \left(
+        \sum_{j=1}^n x^{(i)}_j \log \phi_{j|y=0}
+        \right) + \log (1-\phi_y)
+        - \left(
+        \sum_{j=1}^n x^{(i)}_j \log \phi_{j|y=1} \right) - \log \phi_y \\
+        &= \log\frac{1-\phi_y}{\phi_y} + \sum_{j=1}^n x_j^{(i)} \log \frac{\phi_{j|y=0}}{\phi_{j|y=1}}
+    \end{aligned}
+    \]
+And note that if let $z = \log \frac{p(y^{(i)}=0|x^{(i)})}{p(y^{(i)}=1|x^{(i)})}$
+\[
+\begin{aligned}
+    \exp\left( z \right)
+    &= \frac{1-p(y^{(i)}=1|x^{(i)})}{p(y^{(i)}=1|x^{(i)})} \\
+    \frac{1}{p(y^{(i)}=1|x^{(i)})} &= \exp\left( z \right) + 1 \\
+    p(y^{(i)}=1|x^{(i)}) &= \frac{1}{1+\exp(z)}
+\end{aligned}
+\]
+\end{enumerate}
 \end{homeworkProblem}
 
 \end{document}
