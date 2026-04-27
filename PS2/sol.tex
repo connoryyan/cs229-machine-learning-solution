@@ -599,15 +599,19 @@
         &= \log\frac{1-\phi_y}{\phi_y} + \sum_{j=1}^n x_j^{(i)} \log \frac{\phi_{j|y=0}}{\phi_{j|y=1}}
     \end{aligned}
     \]
-And note that if let $z = \log \frac{p(y^{(i)}=0|x^{(i)})}{p(y^{(i)}=1|x^{(i)})}$
-\[
-\begin{aligned}
-    \exp\left( z \right)
-    &= \frac{1-p(y^{(i)}=1|x^{(i)})}{p(y^{(i)}=1|x^{(i)})} \\
-    \frac{1}{p(y^{(i)}=1|x^{(i)})} &= \exp\left( z \right) + 1 \\
-    p(y^{(i)}=1|x^{(i)}) &= \frac{1}{1+\exp(z)}
-\end{aligned}
-\]
+    And note that if let $z = \log \frac{p(y^{(i)}=0|x^{(i)})}{p(y^{(i)}=1|x^{(i)})}$
+    \[
+    \begin{aligned}
+        \exp\left( z \right)
+        &= \frac{1-p(y^{(i)}=1|x^{(i)})}{p(y^{(i)}=1|x^{(i)})} \\
+        \frac{1}{p(y^{(i)}=1|x^{(i)})} &= \exp\left( z \right) + 1 \\
+        p(y^{(i)}=1|x^{(i)}) &= \frac{1}{1+\exp(z)}
+    \end{aligned}
+    \]
+
+    \item[(c)] See the code.
+    \item[(d)] See the code.
+
 \end{enumerate}
 \end{homeworkProblem}
 
