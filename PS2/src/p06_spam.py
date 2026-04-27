@@ -182,9 +182,17 @@ def compute_best_svm_radius(train_matrix, train_labels, val_matrix, val_labels, 
     Returns:
         The best radius which maximizes SVM accuracy.
     """
-    # *** START CODE HERE ***
-    # *** END CODE HERE ***
 
+    max_accuracy = 0
+    best_radius = 1
+    
+    for radius in radius_to_consider:
+        accuracy = np.mean(svm.train_and_predict_svm(train_matrix, train_labels, val_matrix, radius) == val_labels)
+        if accuracy > max_accuracy:
+            max_accuracy = accuracy
+            best_radius = radius
+
+    return best_radius
 
 def main():
     train_messages, train_labels = util.load_spam_dataset('./PS2/data/ds6_train.tsv')
