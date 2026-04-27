@@ -153,8 +153,17 @@ def get_top_five_naive_bayes_words(model, dictionary):
 
     Returns: The top five most indicative words in sorted order with the most indicative first
     """
-    
-    
+    phi1 = model["phi1"]
+    phi0 = model["phi0"]
+    top_words_index = (np.argsort(-np.log(phi1 / phi0)))[:5]
+
+    top_words = []
+    inv_dict = {v: k for k, v in dictionary.items()}
+
+    for i in top_words_index:
+        top_words.append(inv_dict[i])
+
+    return top_words
 
 
 def compute_best_svm_radius(train_matrix, train_labels, val_matrix, val_labels, radius_to_consider):
