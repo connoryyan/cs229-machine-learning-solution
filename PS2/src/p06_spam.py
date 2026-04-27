@@ -44,7 +44,7 @@ def create_dictionary(messages):
     tot = 0
 
     for message in messages:
-        words = get_words(message)
+        words = set(get_words(message))
         for word in words:
             if dic_count.get(word) is None:
                 dic_count[word] = 1
@@ -86,7 +86,7 @@ def transform_text(messages, word_dictionary):
     for i in range(m):
         words = get_words(messages[i])
         for word in words:
-            if word_dictionary.get(word) == None: continue
+            if word_dictionary.get(word) is None: continue
             messages_arr[i][word_dictionary[word]] += 1
 
     return messages_arr
@@ -107,9 +107,17 @@ def fit_naive_bayes_model(matrix, labels):
     Returns: The trained model
     """
 
-    # *** START CODE HERE ***
-    # *** END CODE HERE ***
+    m, n = matrix.shape
+    state = {}
 
+    x1 = matrix[labels == 1]
+    x0 = matrix[labels == 0]
+
+    state["phi1"] = (np.sum(x1, axis=0) + 1) / (np.sum(x1) + n)
+    state["phi0"] = (np.sum(x0, axis=0) + 1) / (np.sum(x0) + n)
+    state["phiy"] = np.sum(labels) / m
+
+    return state
 
 def predict_from_naive_bayes_model(model, matrix):
     """Use a Naive Bayes model to compute predictions for a target matrix.
@@ -121,10 +129,16 @@ def predict_from_naive_bayes_model(model, matrix):
         model: A trained model from fit_naive_bayes_model
         matrix: A numpy array containing word counts
 
-    Returns: A numpy array containg the predictions from the model
+    Returns: A numpy array containing the predictions from the model
     """
-    # *** START CODE HERE ***
-    # *** END CODE HERE ***
+
+    phi1 = model["phi1"]
+    phi0 = model["phi0"]
+    phiy = model["phiy"]
+
+    z = np.log((1 - phiy) / phiy) + np.sum(matrix * np.log(phi0 / phi1), axis=1)
+    
+    return z <= 0
 
 
 def get_top_five_naive_bayes_words(model, dictionary):
@@ -139,8 +153,8 @@ def get_top_five_naive_bayes_words(model, dictionary):
 
     Returns: The top five most indicative words in sorted order with the most indicative first
     """
-    # *** START CODE HERE ***
-    # *** END CODE HERE ***
+    
+    
 
 
 def compute_best_svm_radius(train_matrix, train_labels, val_matrix, val_labels, radius_to_consider):
