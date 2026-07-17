@@ -1,0 +1,177 @@
+\documentclass{article}
+
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{extramarks}
+\usepackage{amsmath}
+\usepackage{cleveref}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{tikz}
+\usepackage[plain]{algorithm}
+\usepackage{algpseudocode}
+
+\usetikzlibrary{automata,positioning}
+
+%
+% Basic Document Settings
+%
+
+\topmargin=-0.45in
+\evensidemargin=0in
+\oddsidemargin=0in
+\textwidth=6.5in
+\textheight=9.0in
+\headsep=0.25in
+
+\linespread{1.1}
+
+\pagestyle{fancy}
+\lhead{\hmwkAuthorName}
+\chead{\hmwkClass , \hmwkClassInstructor: \hmwkTitle}
+\rhead{\firstxmark}
+\lfoot{\lastxmark}
+\cfoot{\thepage}
+
+\renewcommand\headrulewidth{0.4pt}
+\renewcommand\footrulewidth{0.4pt}
+
+\setlength\parindent{0pt}
+
+%
+% Create Problem Sections
+%
+
+\newcommand{\enterProblemHeader}[1]{
+    \nobreak\extramarks{}{Problem \arabic{#1} continued on next page\ldots}\nobreak{}
+    \nobreak\extramarks{Problem \arabic{#1} (continued)}{Problem \arabic{#1} continued on next page\ldots}\nobreak{}
+}
+
+\newcommand{\exitProblemHeader}[1]{
+    \nobreak\extramarks{Problem \arabic{#1} (continued)}{Problem \arabic{#1} continued on next page\ldots}\nobreak{}
+    \stepcounter{#1}
+    \nobreak\extramarks{Problem \arabic{#1}}{}\nobreak{}
+}
+
+\setcounter{secnumdepth}{0}
+\newcounter{partCounter}
+\newcounter{homeworkProblemCounter}
+\setcounter{homeworkProblemCounter}{1}
+\nobreak\extramarks{Problem \arabic{homeworkProblemCounter}}{}\nobreak{}
+
+%
+% Homework Problem Environment
+%
+% This environment takes an optional argument. When given, it will adjust the
+% problem counter. This is useful for when the problems given for your
+% assignment aren't sequential. See the last 3 problems of this template for an
+% example.
+%
+\newenvironment{homeworkProblem}[1][-1]{
+    \ifnum#1>0
+        \setcounter{homeworkProblemCounter}{#1}
+    \fi
+    \section{Problem \arabic{homeworkProblemCounter}}
+    \setcounter{partCounter}{1}
+    \enterProblemHeader{homeworkProblemCounter}
+}{
+    \exitProblemHeader{homeworkProblemCounter}
+}
+
+%
+% Homework Details
+%   - Title
+%   - Due date
+%   - Class
+%   - Section/Time
+%   - Instructor
+%   - Author
+%
+
+\newcommand{\hmwkTitle}{Problem Set 3}
+\newcommand{\hmwkClass}{CS229}
+\newcommand{\hmwkClassInstructor}{Prof. Andrew Ng}
+\newcommand{\hmwkAuthorName}{\textbf{Connor Yan}}
+
+%
+% Title Page
+%
+
+\title{
+    \vspace{2in}
+    \textmd{\textbf{\hmwkClass}}\\
+    \textmd{\textbf{\hmwkTitle}}\\
+    \vspace{3in}
+}
+
+\author{\hmwkAuthorName}
+\date{\today}
+
+\renewcommand{\part}[1]{\textbf{\large Part \Alph{partCounter}}\stepcounter{partCounter}\\}
+
+% Alias for the Solution section header
+\newcommand{\solution}{\textbf{\large Solution}}
+
+% Probability commands: Expectation, Variance, Covariance, Bias
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\Bias}{\mathrm{Bias}}
+\newcommand{\dd}{\mathrm{d}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\mb}{\mathrm}
+
+\begin{document}
+
+\maketitle
+
+\pagebreak
+
+\begin{homeworkProblem}
+\begin{enumerate}
+    \item[(a)] The network implies
+    \[
+        h_2^{(i)} = g\left( (w^{[1]}_{1,2})^T x^{(i)} + w^{[1]}_{0,2} \right), \ 
+        o^{(i)} =  g\left((w^{[2]})^T h^{(i)} + w^{[2]}_{0} \right), \ \text{where } g(z) = \frac{1}{1 + \exp(-z)}
+    \]
+    The derivative of loss function w.r.t. $w^{[1]}_{1,2}$ is
+    \[
+    \begin{aligned}
+        \frac{\partial \ell}{\partial w^{[1]}_{1,2}}
+        &= \frac{\partial \ell}{\partial o} \cdot \frac{\partial o}{\partial h_2} \cdot \frac{\partial h_2}{\partial w^{[1]}_{1,2}} \\
+        &= \frac{2}{m} \sum_{i=1}^m (o^{(i)}-y^{(i)}) \cdot o^{(i)}(1-o^{(i)})w^{[2]}_{2} \cdot h_2^{(i)}(1-h_2^{(i)})x^{(i)}
+    \end{aligned}
+    \]
+    Hence, the GD update is
+    \[
+    \begin{aligned}
+        w^{[1]}_{1,2} &:= w^{[1]}_{1,2} - \alpha \frac{\partial \ell}{\partial w^{[1]}_{1,2}} \\
+        &= w^{[1]}_{1,2} - \alpha \cdot \frac{2}{m}\sum_{i=1}^m(o^{(i)}-y^{(i)}) o^{(i)}(1-o^{(i)})w^{[2]}_{2} h_2^{(i)}(1-h_2^{(i)})x^{(i)}
+    \end{aligned}
+    \]
+    
+    \item[(b)] The two classes are seperable by a triangle. The constraint indicating that a data point lies outside of one side of the triangle can be written as
+    \[
+        x^{(i)}_2 \le kx^{(i)}_1 + b \text{ or }x^{(i)}_2 \ge kx^{(i)}_1 + b
+    \]
+    Or, in terms of weights and bias,
+    \[
+        w_{1,j}^{[1]} x^{(i)}_1 + w_{2,j}^{[1]}x_2^{(i)} + w^{[1]}_{0,j} \ge 0
+    \]
+    That is to say, if weights and bias are rightly set, given a data point is outside of the triangle,
+    \[
+        h_j = f(w_{1,j}^{[1]} x^{(i)}_1 + w_{2,j}^{[1]}x_2^{(i)} + w^{[1]}_{0,j}) = 1
+    \]
+    Hence, to achieve 100\% accuracy is to ensure all 3 neurons in the hidden layer to output 1, namely, the output neuron is something like
+    \[
+        o = f(h_1 + h_2 + h_3 - 2.5),
+    \]
+    so that $o=1$ if and only if the data point is outside of all three sides of the triangle.
+
+    \item[(c)] 
+    
+\end{enumerate}
+\end{homeworkProblem}
+
+\end{document}
