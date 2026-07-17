@@ -140,17 +140,36 @@
     \begin{aligned}
         \frac{\partial \ell}{\partial w^{[1]}_{1,2}}
         &= \frac{\partial \ell}{\partial o} \cdot \frac{\partial o}{\partial h_2} \cdot \frac{\partial h_2}{\partial w^{[1]}_{1,2}} \\
-        &= \frac{2}{m} \sum_{i=1}^m (o^{(i)}-y^{(i)}) \cdot o(1-o)w^{[2]}_{j} \cdot h_2^{(i)}(1-h_2^{(i)})x^{(i)}
+        &= \frac{2}{m} \sum_{i=1}^m (o^{(i)}-y^{(i)}) \cdot o^{(i)}(1-o^{(i)})w^{[2]}_{2} \cdot h_2^{(i)}(1-h_2^{(i)})x^{(i)}
     \end{aligned}
     \]
     Hence, the GD update is
     \[
     \begin{aligned}
         w^{[1]}_{1,2} &:= w^{[1]}_{1,2} - \alpha \frac{\partial \ell}{\partial w^{[1]}_{1,2}} \\
-        &= w^{[1]}_{1,2} - \alpha \cdot \frac{2}{m}\sum_{i=1}^m(o^{(i)}-y^{(i)}) o(1-o)w^{[2]}_{j} h_2^{(i)}(1-h_2^{(i)})x^{(i)}
+        &= w^{[1]}_{1,2} - \alpha \cdot \frac{2}{m}\sum_{i=1}^m(o^{(i)}-y^{(i)}) o^{(i)}(1-o^{(i)})w^{[2]}_{2} h_2^{(i)}(1-h_2^{(i)})x^{(i)}
     \end{aligned}
     \]
-    \item[(b)] 
+    
+    \item[(b)] The two classes are seperable by a triangle. The constraint indicating that a data point lies outside of one side of the triangle can be written as
+    \[
+        x^{(i)}_2 \le kx^{(i)}_1 + b \text{ or }x^{(i)}_2 \ge kx^{(i)}_1 + b
+    \]
+    Or, in terms of weights and bias,
+    \[
+        w_{1,j}^{[1]} x^{(i)}_1 + w_{2,j}^{[1]}x_2^{(i)} + w^{[1]}_{0,j} \ge 0
+    \]
+    That is to say, if weights and bias are rightly set, given a data point is outside of the triangle,
+    \[
+        h_j = f(w_{1,j}^{[1]} x^{(i)}_1 + w_{2,j}^{[1]}x_2^{(i)} + w^{[1]}_{0,j}) = 1
+    \]
+    Hence, to achieve 100\% accuracy is to ensure all 3 neurons in the hidden layer to output 1, namely, the output neuron is something like
+    \[
+        o = f(h_1 + h_2 + h_3 - 2.5),
+    \]
+    so that $o=1$ if and only if the data point is outside of all three sides of the triangle.
+
+    \item[(c)] 
     
 \end{enumerate}
 \end{homeworkProblem}
