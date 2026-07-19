@@ -191,7 +191,67 @@
 \end{homeworkProblem}
 
 \begin{homeworkProblem}
+\begin{enumerate}
+    \item[(a)]
+    \[
+    \begin{aligned}
+        D_\mathrm{KL}(P\|Q) &= \sum_{x\in\mathcal{X}} P(x) \log \frac{P(x)}{Q(x)}\\
+        &= \E_{X\sim P}\left[ \log \frac{P(X)}{Q(X)} \right] \\
+        &= \E_{X\sim P}\left[ -\log \frac{Q(X)}{P(X)} \right] \\
+    \end{aligned}
+    \]
+    Since $f(x) = -\log x$ is convex, according to Jensen's inequality,
+    \[
+    \begin{aligned}
+        D_\mathrm{KL}(P||Q) = \E_{X\sim P}\left[ -\log \frac{Q(X)}{P(X)} \right]
+        &\ge -\log \E_{X\sim P}\left[ \frac{Q(X)}{P(X)} \right] \\
+        &= -\log \sum_{x\in\mathcal{X}} Q(x) \\
+        &= -\log 1 \\
+        &= 0
+    \end{aligned}
+    \]
+    Note that the inequality has $\E_{X\sim P}\left[ -\log \frac{Q(X)}{P(X)} \right] = -\log \E_{X\sim P}\left[ \frac{Q(X)}{P(X)} \right]$ if and only if 
+    \[
+    \begin{aligned}
+        \frac{Q(X)}{P(X)} = \E_{X\sim P}\left[ \frac{Q(X)}{P(X)} \right] = 1,
+    \end{aligned}
+    \]
+    i.e. $Q=P$.
+    Hence,
+    \[
+    \forall P,Q \ \ D_\mathrm{KL}(P\|Q)\ge 0 \text{ and } D_\mathrm{KL}(P\|Q) = 0 \text{ iif.} P=Q
+    \]
+
+    \item[(b)]
+    \[
+    \begin{aligned}
+        D_\mathrm{KL}(P(X,Y)\|Q(X,Y))
+        &= \sum_x\sum_y P(x,y) \log \frac{P(x,y)}{Q(x,y)} \\
+        &= \sum_x\sum_y P(y|x)P(x) \log \frac{P(y|x)P(x)}{Q(y|x)Q(x)} \\
+        &= \sum_x P(x) \sum_y P(y|x) \left( \log\frac{P(y|x)}{Q(y|x)} + \log\frac{P(x)}{Q(x)} \right) \\
+        &= \sum_x P(x) \sum_y P(y|x) \log\frac{P(y|x)}{Q(y|x)} 
+           + \sum_x P(x) \log\frac{P(x)}{Q(x)} \sum_y P(y|x) \\
+        &= D_\mathrm{KL}(P(Y|X)\|Q(Y|X)) + D_\mathrm{KL}(P(X)\|Q(X))
+    \end{aligned}
+    \]
+
+    \item[(c)]
+    \[
+    \begin{aligned}
+        D_\mathrm{KL}(\hat{P}\|P_\theta)
+        &= \sum_{i=1}^m \hat{P}(x^{(i)}) \log{\frac{\hat{P}(x^{(i)})}{P_\theta(x^{(i)})}} \\
+        &= H(\hat{P}) - \sum_{i=1}^m \hat{P}(x^{(i)}) \log{P_\theta(x^{(i)})} \\
+        &= H(\hat{P}) - \sum_{i=1}^m \log{P_\theta(x^{(i)})} \cdot \frac{1}{m}\sum_{j=1}^m{ 1\{x^{(j)} = x^{(i)}\} } \\
+        &= H(\hat{P}) - \frac{1}{m} \sum_{i=1}^m \log{P_\theta(x^{(i)})}
+    \end{aligned}
+    \]
+    Hence,
+    \[
+    \arg\min_\theta D_\mathrm{KL}(\hat{P}\|P_\theta) = \arg\max_\theta \sum_{i=1}^m \log{P_\theta(x^{(i)})}
+    \]
     
+    
+\end{enumerate}
 \end{homeworkProblem}
 
 \end{document}
