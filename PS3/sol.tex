@@ -250,6 +250,148 @@
     \arg\min_\theta D_\mathrm{KL}(\hat{P}\|P_\theta) = \arg\max_\theta \sum_{i=1}^m \log{P_\theta(x^{(i)})}
     \]
     
+\end{enumerate}
+\end{homeworkProblem}
+
+\begin{homeworkProblem}
+\begin{enumerate}
+    \item[(a)] 
+    \[
+    \begin{aligned}
+        \E_{y\sim p(y;\theta)}[\nabla_{\theta'}\log{p(y;\theta')}|_{\theta'=\theta}]
+        &= \int_{-\infty}^\infty{ p(y;\theta) \nabla_{\theta'}\log{p(y;\theta')}|_{\theta'=\theta} }  dy \\
+        &= \int_{-\infty}^\infty{ \nabla_{\theta'} p(y;\theta')|_{\theta'=\theta} } dy \\
+        &= \left. \nabla_{\theta'} \int_{-\infty}^\infty{ p(y;\theta') } dy \right|_{\theta'=\theta} \\
+        &= \nabla_{\theta'} 1 |_{\theta'=\theta} \\
+        &= 0
+    \end{aligned}
+    \]
+
+    \item[(b)] Let
+    \[
+    \mu = \E_{y\sim p(y;\theta)}[\nabla_{\theta'}\log{p(y;\theta')}|_{\theta'=\theta}] = 0
+    \]
+    Then,
+    \[
+    \begin{aligned}
+        \mathcal{I}(\theta) &= \Cov_{y\sim p(y;\theta)}[\nabla_{\theta'}\log{p(y;\theta')}|_{\theta'=\theta}] \\
+        &= \E_{y\sim p(y;\theta)}[(\nabla_{\theta'}\log{p(y;\theta')}-\mu) (\nabla_{\theta'}\log{p(y;\theta')}-\mu)^T|_{\theta'=\theta}], \\
+        &= \E_{y\sim p(y;\theta)}[\nabla_{\theta'}\log{p(y;\theta')} \nabla_{\theta'}\log{p(y;\theta')}^T|_{\theta'=\theta}]
+    \end{aligned}
+    \]
+
+    \item[(c)] 
+    \[
+    \begin{aligned}
+        \nabla_{\theta'}\log{p(y;\theta')} &= \frac{1}{p}\nabla_{\theta'}p(y;\theta')\\
+        \nabla_{\theta'}^2\log{p(y;\theta')}
+        &= -\frac{1}{p^2}\nabla_{\theta'}p(y;\theta')\left(\nabla_{\theta'}p(y;\theta')\right)^T + \frac{1}{p}\nabla_{\theta'}^2p(y;\theta')
+    \end{aligned}
+    \]
+    \[
+    \begin{aligned}
+        \E_{y\sim p(y;\theta)}[-\nabla_{\theta'}^2\log{p(y;\theta')}|_{\theta'=\theta}]
+        &= \int_{-\infty}^\infty{ -p\nabla_{\theta'}^2\log{p(y;\theta')}|_{\theta'=\theta} } dy \\
+        &= \int_{-\infty}^\infty{ \left. \frac{1}{p}\nabla_{\theta'} p(y;\theta') \left(\nabla_{\theta'}p(y;\theta')\right)^T - \nabla_{\theta'}^2p(y;\theta') \right|_{\theta'=\theta} } dy \\
+        &= \int_{-\infty}^\infty{ \left. p\nabla_{\theta'} \log p(y;\theta') \left(\nabla_{\theta'}\log p(y;\theta')\right)^T\right|_{\theta'=\theta} } dy + \nabla_{\theta'}^2 \int_{-\infty}^\infty{ p(y;\theta') } dy |_{\theta'=\theta} \\
+        &= \E_{y\sim p(y;\theta)}[\nabla_{\theta'}\log{p(y;\theta')} \nabla_{\theta'}\log{p(y;\theta')}^T|_{\theta'=\theta}]\\
+        &= \mathcal{I}(\theta)
+    \end{aligned}
+    \]
+
+    \item[(d)] Let $\theta + d = \tilde{\theta}$, $f(\tilde{\theta}) = D_\mathrm{KL}(p_{\theta}\|p_{\tilde{\theta}})$.
+    \[
+    f(\theta) = D_\mathrm{KL}(p_{\theta}\|p_{\theta}) = 0
+    \]
+    \[
+    \begin{aligned}
+        \nabla_{\theta'}f(\theta') &= \nabla_{\theta'} D_\mathrm{KL}(p_{\theta}\|p_{\theta'}) \\
+        &= \nabla_{\theta'} \int_{-\infty}^\infty{p_\theta(x) \log\frac{p_\theta(x)}{p_{\theta'}(x)}}dx \\
+        &= -\nabla_{\theta'} \int_{-\infty}^\infty{p_\theta(x) \log p_{\theta'}(x)}dx \\
+        &= -\E_{x\sim p(x)}[\nabla_{\theta'} \log p_{\theta'}(x)]
+    \end{aligned}
+    \]
+    \[
+    \begin{aligned}
+        \nabla_{\theta'}^2 f(\theta') &= -\nabla_{\theta'} \int_{-\infty}^\infty{p_\theta(x) \nabla_{\theta'} \log p_{\theta'}(x)}dx \\
+        &= \E_{x\sim p(x)}[-\nabla_{\theta'}^2 \log p_{\theta'}(x)]
+    \end{aligned}
+    \]
+    The Taylor series of $f(\tilde{\theta})$ near $\theta$ is
+    \[
+    \begin{aligned}
+        f(\tilde{\theta})
+        &\approx f(\theta) + (\tilde{\theta}-\theta)^T\nabla_{\theta'}f(\theta')|_{\theta'=\theta} + \frac{1}{2}(\tilde{\theta}-\theta)^T(\nabla_{\theta'}^2f(\theta')|_{\theta'-\theta})(\tilde{\theta}-\theta) \\
+        &=  0 - d^T\E_{x\sim p(x)}[\nabla_{\theta'} \log p_{\theta'}(x)|_{\theta'=\theta}] + \frac{1}{2}d^T\E_{x\sim p(x)}[-\nabla_{\theta'}^2 \log p_{\theta'}(x)|_{\theta'=\theta}]]d \\
+        &= \frac{1}{2}d^T\mathcal{I}(\theta)d
+    \end{aligned}
+    \]
+
+    \item[(e)] 
+    \[
+    \begin{aligned}
+        \mathcal{L}(d,\lambda) &= \ell(\theta+d) - \lambda[D_\mathrm{KL}(p_\theta\|p_{\theta+d})-c] \\
+        &\approx \ell(\theta) + d^T\nabla_{\theta'}\ell(\theta')|_{\theta'=\theta} - \lambda\left[ \frac{1}{2}d^T\mathcal{I}(\theta)d - c \right]
+    \end{aligned}
+    \]
+    \[
+    \nabla_d\mathcal{L}(d,\lambda) = \nabla_{\theta'}\ell(\theta')|_{\theta'=\theta} - \lambda \mathcal{I}^T(\theta)d = \nabla_{\theta'}\ell(\theta')|_{\theta'=\theta} - \lambda \mathcal{I}(\theta)d
+    \]
+    \[
+    \nabla_\lambda\mathcal{L}(d,\lambda) = \frac{1}{2}d^T\mathcal{I}(\theta)d - c
+    \]
+    Hence, we have system of linear equations:
+    \begin{align}
+        \nabla_{\theta'}\ell(\theta')|_{\theta'=\theta} - \lambda \mathcal{I}^T(\theta)d &= 0 \tag{a}\\
+        \frac{1}{2}d^T\mathcal{I}(\theta)d - c &= 0 \tag{b}
+    \end{align}
+    From (a) we have
+    \[
+    d = \frac{1}{\lambda} \mathcal{I}^{-1}(\theta) \nabla_{\theta'}\ell(\theta')|_{\theta'=\theta}
+    \]
+    Plug it into (b):
+    \[
+    \begin{aligned}
+        \frac{1}{\lambda^2} (\nabla_{\theta'}\ell(\theta')|_{\theta'=\theta})^T \mathcal{I}^{-1}(\theta) \mathcal{I}(\theta) \mathcal{I}^{-T}(\theta) \nabla_{\theta'}\ell(\theta')|_{\theta'=\theta} &= 2c \\
+        \frac{1}{\lambda^2} (\nabla_{\theta'}\ell(\theta')|_{\theta'=\theta})^T \mathcal{I}^{-T}(\theta) \nabla_{\theta'}\ell(\theta')|_{\theta'=\theta} &= 2c \\
+        \lambda &= \sqrt{\frac{1}{2c} (\nabla_{\theta'}\ell(\theta')|_{\theta'=\theta})^T \mathcal{I}^{-1}(\theta) \nabla_{\theta'}\ell(\theta')|_{\theta'=\theta}}
+    \end{aligned}
+    \]
+    Plug it back into (a), which yields natural gradient:
+    \[
+    \boxed{
+        d^* = \sqrt{\frac{2c}{(\nabla_{\theta'}\ell(\theta')|_{\theta'=\theta})^T \mathcal{I}^{-1}(\theta) \nabla_{\theta'}\ell(\theta')|_{\theta'=\theta}} } \mathcal{I}^{-1}(\theta) \nabla_{\theta'}\ell(\theta')|_{\theta'=\theta}
+    }
+    \]
+
+    \item[(f)]
+    \[
+    \begin{aligned}
+        \mathcal{I}(\theta)
+        &= \E_{y\sim p(y;\theta)}[-\nabla_{\theta'}^2\log{p(y;\theta')}|_{\theta'=\theta})] \\
+        &= \frac{1}{m} \sum_{i=1}^m \E_{y^{(i)}\sim p(y;\theta)}[-\nabla_{\theta'}^2\log{p(y^{(i)};\theta')}|_{\theta'=\theta}] \\
+        &= \frac{1}{m} \E_{y^{(i)}\sim p(y;\theta)}[-\nabla_{\theta'}^2 \sum_{i=1}^m \log{p(y^{(i)};\theta')}|_{\theta'=\theta}] \\
+        &= \frac{1}{m} \E_{y\sim p(y;\theta)}[-\nabla_{\theta'}^2 \ell(\theta') |_{\theta'=\theta}] \\
+        &= \frac{1}{m} \E_{y\sim p(y;\theta)}[-\nabla_{\theta'}^2 \ell(\theta') \nabla_{\theta'}^2 \ell(\theta') |_{\theta'=\theta}] \nabla_{\theta'}^2 \ell(\theta') |_{\theta'=\theta} \\
+        &= \frac{1}{m} \E_{y\sim p(y;\theta)}[-1] \nabla_{\theta'}^2 \ell(\theta') |_{\theta'=\theta} \\
+        &= -\frac{1}{m} \nabla_{\theta'}^2 \ell(\theta') |_{\theta'=\theta}
+    \end{aligned}
+    \]
+    The natural gradient is
+    \[
+    \begin{aligned}
+        \tilde{d} &= \frac{1}{\lambda} \mathcal{I}^{-1}(\theta) \nabla_{\theta'}\ell(\theta')|_{\theta'=\theta} \\
+        &= -\frac{1}{\lambda m} (\nabla_{\theta'}^2 \ell(\theta'))^{-1} \nabla_{\theta'}\ell(\theta')|_{\theta'=\theta}
+    \end{aligned}
+    \]
+    Newton's method has update rule
+    \[
+    \begin{aligned}
+        \theta &:= \theta - (\nabla^2_{\theta'}\ell(\theta')|_{\theta'=\theta})^{-1} \nabla_{\theta'}\ell(\theta')|_{\theta'=\theta} \\
+        &= \theta + \lambda m \tilde{d}
+    \end{aligned}
+    \]
+    
     
 \end{enumerate}
 \end{homeworkProblem}
