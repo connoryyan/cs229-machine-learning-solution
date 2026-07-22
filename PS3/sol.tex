@@ -706,7 +706,59 @@
     \mathbf{1}\{\tilde{z}^{(i)}=j\}
     }
     \]
+
+    \item[(d)] Figure~\ref{fig:gmm_unsup_0}, Figure~\ref{fig:gmm_unsup_1}, and
+    Figure~\ref{fig:gmm_unsup_2} show the unsupervised GMM cluster assignments
+    obtained from three independent random initializations. The clusters
+    recovered vary noticeably across trials, illustrating that unsupervised
+    EM is sensitive to initialization and can converge to different local
+    optima of the log-likelihood.
     
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.75\linewidth]{PS3/output/p03_pred_0.pdf}
+        \caption{Unsupervised GMM predictions, trial 1.}
+        \label{fig:gmm_unsup_0}
+    \end{figure}
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.75\linewidth]{PS3/output/p03_pred_1.pdf}
+        \caption{Unsupervised GMM predictions, trial 2.}
+        \label{fig:gmm_unsup_1}
+    \end{figure}
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.75\linewidth]{PS3/output/p03_pred_2.pdf}
+        \caption{Unsupervised GMM predictions, trial 3.}
+        \label{fig:gmm_unsup_2}
+    \end{figure}
+    
+    \item[(e)] Figure~\ref{fig:gmm_ss_0}, Figure~\ref{fig:gmm_ss_1}, and
+    Figure~\ref{fig:gmm_ss_2} show the semi-supervised GMM cluster assignments
+    for the same three initializations, using a small number of labeled
+    examples. Compared to the unsupervised results in part (d), the
+    semi-supervised clusters are much more consistent across trials and
+    converge in fewer iterations, since the labeled examples anchor each
+    Gaussian component to the correct cluster from the start.
+    
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.75\linewidth]{PS3/output/p03_pred_ss_0.pdf}
+        \caption{Semi-supervised GMM predictions, trial 1.}
+        \label{fig:gmm_ss_0}
+    \end{figure}
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.75\linewidth]{PS3/output/p03_pred_ss_1.pdf}
+        \caption{Semi-supervised GMM predictions, trial 2.}
+        \label{fig:gmm_ss_1}
+    \end{figure}
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.75\linewidth]{PS3/output/p03_pred_ss_2.pdf}
+        \caption{Semi-supervised GMM predictions, trial 3.}
+        \label{fig:gmm_ss_2}
+    \end{figure}
     
 \end{enumerate}
 \end{homeworkProblem}
