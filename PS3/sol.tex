@@ -391,6 +391,321 @@
         &= \theta + \lambda m \tilde{d}
     \end{aligned}
     \]
+\end{enumerate}
+\end{homeworkProblem}
+
+\begin{homeworkProblem}
+\begin{enumerate}
+    \item[(a)] 
+    \[
+    \begin{aligned}
+        \ell_\mathrm{semi-sup}(\theta^{(t+1)})
+        &= \left( \sum_{i=1}^m {\log \sum_{z^{(i)}} p(x^{(i)},z^{(i)};\theta^{(t+1)}} \right) + \alpha \sum_{i=1}^{\tilde{m}} \log p(\tilde{x}^{(i)},\tilde{z}^{(i)};\theta^{(t+1)}) \\
+        &\ge \left( \sum_{i=1}^m {\sum_{z^{(i)}} Q_i^{(t)}(z^{(i)}) \log \frac{p(x^{(i)},z^{(i)};\theta^{(t+1)})}{Q_i^{(t)}(z^{(i)})}} \right) + \alpha \sum_{i=1}^{\tilde{m}} \log p(\tilde{x}^{(i)},\tilde{z}^{(i)};\theta^{(t+1)}) \\
+        &\ge \left( \sum_{i=1}^m {\sum_{z^{(i)}} Q_i^{(t)}(z^{(i)}) \log \frac{p(x^{(i)},z^{(i)};\theta^{(t)})}{Q_i^{(t)}(z^{(i)})}} \right) + \alpha \sum_{i=1}^{\tilde{m}} \log p(\tilde{x}^{(i)},\tilde{z}^{(i)};\theta^{(t)}) \\
+        &= \ell_\mathrm{semi-sup}(\theta^{(t)})
+    \end{aligned}
+    \]
+
+    \item[(b)]
+    \[
+    \begin{aligned}
+        Q^{(t)}(z) := p(z \mid x; \mu^{(t)}, \Sigma^{(t)}, \phi^{(t)})
+        &= \frac{ p(x \mid z; \mu^{(t)}, \Sigma^{(t)}, \phi^{(t)}) p(z; \mu^{(t)}, \Sigma^{(t)}, \phi^{(t)}) }{p(x; \mu^{(t)}, \Sigma^{(t)}, \phi^{(t)})} \\
+        &= \frac{
+                \frac{1}{(2\pi)^{d/2}| \Sigma_{z}^{(t)}|^{1/2}}
+                \exp\left( -\frac{1}{2} (x-\mu_{z}^{(t)})^T (\Sigma_{z}^{(t)})^{-1} (x-\mu^{(t)}_{z}) \right)
+                \cdot \phi_z^{(t)}
+            }{
+                \sum_{z} \phi_z^{(t)} \frac{1}{(2\pi)^{d/2}| \Sigma^{(t)}_{z}|^{1/2}}
+                \exp\left( -\frac{1}{2} (x-\mu^{(t)}_{z})^T (\Sigma_{z}^{(t)})^{-1} (x-\mu^{(t)}_{z}) \right)
+            }
+    \end{aligned}
+    \]
+
+    \item[(c)] Consider
+    \[
+    \begin{aligned}
+        J(\mu, \Sigma, \phi)
+        &= \left( \sum_{i=1}^m {\sum_{z^{(i)}} Q_i^{(t)}(z^{(i)}) \log \frac{p(x^{(i)},z^{(i)}; \mu, \Sigma, \phi)}{Q_i^{(t)}(z^{(i)})}} \right)
+            + \alpha \sum_{i=1}^{\tilde{m}} \log p(\tilde{x}^{(i)},\tilde{z}^{(i)}; \mu, \Sigma, \phi) \\
+        &= \left( 
+                \sum_{i=1}^m {
+                    \sum_{z^{(i)}}
+                    Q_i^{(t)}(z^{(i)})
+                    \log \frac{
+                        \phi_{z^{(i)}}
+                        \mathcal{N}(x^{(i)}; \mu_{z^{(i)}}, \Sigma_{z^{(i)}})
+                    }{
+                        Q_i^{(t)}(z^{(i)})
+                    }
+                } 
+            \right)
+            + \alpha \sum_{i=1}^{\tilde{m}} \log \left(
+                \phi_{\tilde{z}^{(i)}}
+                \mathcal{N}(\tilde{x}^{(i)}; \mu_{\tilde{z}^{(i)}}, \Sigma_{\tilde{z}^{(i)}})
+            \right)
+    \end{aligned}
+    \]
+    Update for $\mu$:
+    \[
+    \begin{aligned}
+        \nabla_{\mu_j} J(\mu,\Sigma,\phi)
+        &= \left( \sum_{i=1}^m {
+                Q_i^{(t)}(j)
+                (\Sigma_j^{(t)})^{-T}(x^{(i)}-\mu_j)
+            }\right)
+            + \alpha \sum_{i=1}^{\tilde{m}} {
+                \mathbf{1}\{ \tilde{z}^{(i)} = j \}
+                (\Sigma_j^{(t)})^{-T}(\tilde{x}^{(i)}-\mu_j)
+            }
+        \\
+        &= \left( \sum_{i=1}^m {
+                Q_i^{(t)}(j)
+                (\Sigma_j^{(t)})^{-1}x^{(i)}
+            }\right)
+            + \alpha \sum_{i=1}^{\tilde{m}} {
+                \mathbf{1}\{ \tilde{z}^{(i)} = j \}
+                (\Sigma_j^{(t)})^{-1}\tilde{x}^{(i)}
+            } \\
+        &\qquad- \left[ 
+                \left( \sum_{i=1}^m {
+                    Q_i^{(t)}(j)
+                    (\Sigma_j^{(t)})^{-1}\mu_j
+                }\right)
+                + \alpha \sum_{i=1}^{\tilde{m}} {
+                    \mathbf{1}\{ \tilde{z}^{(i)} = j \}
+                    (\Sigma_j^{(t)})^{-1}\mu_j
+                }
+            \right]
+    \end{aligned}
+    \]
+    Thus, if letting $\nabla_{\mu_j} J(\mu,\Sigma,\phi) = 0$, we have
+    \[
+    \begin{aligned}
+        \left( \sum_{i=1}^m {
+                Q_i^{(t)}(j)
+                (\Sigma_j^{(t)})^{-1}x^{(i)}
+            }\right)
+            +& \alpha \sum_{i=1}^{\tilde{m}} {
+                \mathbf{1}\{ \tilde{z}^{(i)} = j \}
+                (\Sigma_j^{(t)})^{-1}\tilde{x}^{(i)}
+            } \\
+        &= \left[ 
+                \left( \sum_{i=1}^m {
+                    Q_i^{(t)}(j)
+                    (\Sigma_j^{(t)})^{-1}\mu_j
+                }\right)
+                + \alpha \sum_{i=1}^{\tilde{m}} {
+                    \mathbf{1}\{ \tilde{z}^{(i)} = j \}
+                    (\Sigma_j^{(t)})^{-1}\mu_j
+                }
+            \right] \\
+        \mu_j &= \frac{
+            \left( \sum_{i=1}^m {
+                Q_i^{(t)}(j)x^{(i)}
+            }\right)
+            + \alpha \sum_{i=1}^{\tilde{m}} {
+                \mathbf{1}\{ \tilde{z}^{(i)} = j \}
+                \tilde{x}^{(i)}
+            }
+        }{
+            \left( \sum_{i=1}^m {
+                Q_i^{(t)}(j)
+            }\right)
+            + \alpha \sum_{i=1}^{\tilde{m}} {
+                \mathbf{1}\{ \tilde{z}^{(i)} = j \}
+            }
+        }
+    \end{aligned}
+    \]
+
+    Update for $\phi$:
+    \[
+    \begin{aligned}
+        \nabla_{\phi_j} J(\mu,\Sigma,\phi)
+        &= \left( 
+                \sum_{i=1}^m {
+                    Q_i^{(t)}(j)
+                    \frac{1}{\phi_{j}}
+                } 
+            \right)
+            + \alpha \sum_{i=1}^{\tilde{m}}
+            \mathbf{1}\{ \tilde{z}^{(i)} = j \}
+            \frac{1}{\phi_j} \\
+    \end{aligned}
+    \]
+    Note the constraint that $\sum_j \phi_j = 1$. With Lagrange multiplier we have euqation
+    \[
+    \begin{aligned}
+        \nabla_{\phi_j} J(\mu,\Sigma,\phi) - \lambda &= 0 \\
+        \lambda \phi_{j}
+        &= \left( 
+                \sum_{i=1}^m {
+                    Q_i^{(t)}(j)
+                } 
+            \right)
+            + \alpha \sum_{i=1}^{\tilde{m}}
+            \mathbf{1}\{ \tilde{z}^{(i)} = j \} \\
+        \lambda &= \sum_{j=1}^k \left( 
+                \sum_{i=1}^m {
+                    Q_i^{(t)}(j)
+                } 
+            \right)
+            + \alpha \sum_{i=1}^{\tilde{m}}
+            \mathbf{1}\{ \tilde{z}^{(i)} = j \} \\
+        &= \left( 
+                \sum_{i=1}^m {
+                    \sum_{j=1}^k Q_i^{(t)}(j)
+                } 
+            \right)
+            + \alpha \sum_{i=1}^{\tilde{m}}
+            \sum_{j=1}^k
+            \mathbf{1}\{ \tilde{z}^{(i)} = j \} \\
+        &= m + \alpha \tilde{m}
+    \end{aligned}
+    \]
+    Hence,
+    \[
+        \phi_j = \frac{
+            \left( 
+                \sum_{i=1}^m {
+                    Q_i^{(t)}(j)
+                } 
+            \right)
+            + \alpha \sum_{i=1}^{\tilde{m}}
+            \mathbf{1}\{ \tilde{z}^{(i)} = j \}
+        }{
+            m + \alpha \tilde{m}
+        }
+    \]
+
+    Update for $\Sigma$:
+    \[
+    \begin{aligned}
+    \nabla_{\Sigma_j} J(\mu,\Sigma,\phi)
+    &= -\frac{1}{2}
+        \left( \sum_{i=1}^m {
+            Q_i^{(t)}(j)
+            \Sigma_j^{-1}
+        }\right) \\
+    &\qquad+ \frac{1}{2}
+        \left( \sum_{i=1}^m {
+            Q_i^{(t)}(j)
+            \Sigma_j^{-1}
+            (x^{(i)}-\mu^{(t)}_j)
+            (x^{(i)}-\mu^{(t)}_j)^T
+            \Sigma_j^{-1}
+        }\right) \\
+    &\qquad - \frac{\alpha}{2} \left(
+        \sum_{i=1}^{\tilde{m}} {
+            \mathbf{1}\{ \tilde{z}^{(i)} = j \}
+            \Sigma_j^{-1}
+        } \right) \\
+    &\qquad + \frac{\alpha}{2}
+        \sum_{i=1}^{\tilde{m}} {
+            \mathbf{1}\{ \tilde{z}^{(i)} = j \}
+            \Sigma_j^{-1}
+            (\tilde{x}^{(i)} - \mu^{(t)}_j)
+            (\tilde{x}^{(i)} - \mu^{(t)}_j)^T
+            \Sigma_j^{-1}
+        } \\
+    &= \frac{1}{2}
+        \left( \sum_{i=1}^m {
+            Q_i^{(t)}(j)
+            \Sigma_j^{-1}
+            \left(
+                (x^{(i)}-\mu^{(t)}_j)
+                (x^{(i)}-\mu^{(t)}_j)^T
+                \Sigma_j^{-1}
+                -I
+            \right)
+        }\right) \\
+    &\qquad + \frac{\alpha}{2}
+        \sum_{i=1}^{\tilde{m}} {
+            \mathbf{1}\{ \tilde{z}^{(i)} = j \}
+            \Sigma_j^{-1}
+            \left(
+                (\tilde{x}^{(i)} - \mu^{(t)}_j)
+                (\tilde{x}^{(i)} - \mu^{(t)}_j)^T
+                \Sigma_j^{-1}
+                -I
+            \right)
+        }
+    \end{aligned}
+    \]
+    
+    Let $\nabla_{\Sigma_j} J(\mu,\Sigma,\phi)=0$, then
+    
+    \[
+    \begin{aligned}
+    0
+    &= \left( \sum_{i=1}^m {
+        Q_i^{(t)}(j)
+        \left(
+            (x^{(i)}-\mu^{(t)}_j)
+            (x^{(i)}-\mu^{(t)}_j)^T
+            \Sigma_j^{-1}
+            -I
+        \right)
+    }\right) \\
+    &\qquad
+    +\alpha
+    \sum_{i=1}^{\tilde{m}} {
+        \mathbf{1}\{ \tilde{z}^{(i)} = j \}
+        \left(
+            (\tilde{x}^{(i)}-\mu^{(t)}_j)
+            (\tilde{x}^{(i)}-\mu^{(t)}_j)^T
+            \Sigma_j^{-1}
+            -I
+        \right)
+    } \\
+    %
+    \left( \sum_{i=1}^m Q_i^{(t)}(j) \right)
+    +\alpha
+    \sum_{i=1}^{\tilde{m}}
+    \mathbf{1}\{\tilde{z}^{(i)}=j\}
+    &=
+    \left( \sum_{i=1}^m {
+        Q_i^{(t)}(j)
+        (x^{(i)}-\mu^{(t)}_j)
+        (x^{(i)}-\mu^{(t)}_j)^T
+        \Sigma_j^{-1}
+    }\right) \\
+    &\qquad
+    +\alpha
+    \sum_{i=1}^{\tilde{m}} {
+        \mathbf{1}\{\tilde{z}^{(i)}=j\}
+        (\tilde{x}^{(i)}-\mu^{(t)}_j)
+        (\tilde{x}^{(i)}-\mu^{(t)}_j)^T
+        \Sigma_j^{-1}
+    }
+    \end{aligned}
+    \]
+    
+    \[
+    \Sigma_j
+    =
+    \frac{
+    \left( \sum_{i=1}^m
+    Q_i^{(t)}(j)
+    (x^{(i)}-\mu^{(t)}_j)
+    (x^{(i)}-\mu^{(t)}_j)^T
+    \right)
+    +
+    \alpha
+    \sum_{i=1}^{\tilde{m}}
+    \mathbf{1}\{\tilde{z}^{(i)}=j\}
+    (\tilde{x}^{(i)}-\mu^{(t)}_j)
+    (\tilde{x}^{(i)}-\mu^{(t)}_j)^T
+    }{
+    \left( \sum_{i=1}^m Q_i^{(t)}(j) \right)
+    +
+    \alpha
+    \sum_{i=1}^{\tilde{m}}
+    \mathbf{1}\{\tilde{z}^{(i)}=j\}
+    }
+    \]
     
     
 \end{enumerate}
