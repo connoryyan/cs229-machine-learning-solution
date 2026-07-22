@@ -14,7 +14,7 @@ def main(is_semi_supervised, trial_num):
           .format('semi-supervised' if is_semi_supervised else 'unsupervised'))
 
     # Load dataset
-    train_path = os.path.join('..', 'data', 'ds3_train.csv')
+    train_path = os.path.join('PS3', 'data', 'ds3_train.csv')
     x, z = load_gmm_dataset(train_path)
     x_tilde = None
 
@@ -28,10 +28,24 @@ def main(is_semi_supervised, trial_num):
     # *** START CODE HERE ***
     # (1) Initialize mu and sigma by splitting the m data points uniformly at random
     # into K groups, then calculating the sample mean and covariance for each group
+    m, n = x.shape
+    group = np.random.randint(0, K, m)
+
+    mu = [0] * K
+    sigma = [0] * K
+    for j in range(K):
+        group_j = group == j
+        mu[j] = np.mean(x[group_j], axis=0)
+        x_mu = x[group_j] - mu[j]
+        sigma[j] = x_mu.T @ x_mu / np.sum(group_j)
+
     # (2) Initialize phi to place equal probability on each Gaussian
     # phi should be a numpy array of shape (K,)
+    phi = np.array([1/K]*K)
+
     # (3) Initialize the w values to place equal probability on each Gaussian
     # w should be a numpy array of shape (m, K)
+    w = np.zeros((m, K));
     # *** END CODE HERE ***
 
     if is_semi_supervised:
@@ -47,6 +61,22 @@ def main(is_semi_supervised, trial_num):
 
     plot_gmm_preds(x, z_pred, is_semi_supervised, plot_id=trial_num)
 
+def gaussian(x, mu_j, inv_sigma_j, sqrt_det_sigma_j, pi2k2):
+    """Vectorized multivariate normal density for all m examples at once.
+
+    Args:
+        x: (m, n)
+        mu_j: (n,)
+        inv_sigma_j: (n, n)
+        sqrt_det_sigma_j: scalar
+        pi2k2: scalar, (2*pi)^(n/2)
+
+    Returns:
+        (m,) array of densities
+    """
+    diff = x - mu_j # (m, n)
+    esum = np.einsum('ij,jk,ik->i', diff, inv_sigma_j, diff)  # (m,)
+    return (1.0 / (pi2k2 * sqrt_det_sigma_j)) * np.exp(-0.5 * esum)
 
 def run_em(x, w, phi, mu, sigma):
     """Problem 3(d): EM Algorithm (unsupervised).
@@ -68,22 +98,63 @@ def run_em(x, w, phi, mu, sigma):
     # No need to change any of these parameters
     eps = 1e-3  # Convergence threshold
     max_iter = 1000
+    m, n = x.shape
+    _, k = w.shape
+
+    pi2k2 = (np.pi * 2) ** (n / 2)
 
     # Stop when the absolute change in log-likelihood is < eps
     # See below for explanation of the convergence criterion
     it = 0
     ll = prev_ll = None
     while it < max_iter and (prev_ll is None or np.abs(ll - prev_ll) >= eps):
-        pass  # Just a placeholder for the starter code
         # *** START CODE HERE
         # (1) E-step: Update your estimates in w
+        pxz = np.zeros((m, k))
+        for j in range(k):
+            inv_sigma = np.linalg.inv(sigma[j])
+            sqrt_det_sigma = np.linalg.det(sigma[j]) ** 0.5
+            pxz[:, j] = gaussian(x, mu[j], inv_sigma, sqrt_det_sigma, pi2k2) * phi[j]
+                
+        
+        px = pxz.sum(axis = 1).reshape(-1, 1)
+        w = pxz / px
+
         # (2) M-step: Update the model parameters phi, mu, and sigma
+        sum_w = w.sum(axis = 0) # (k, )
+        phi = sum_w / m
+
+        sum_wx = w.T @ x
+
+        for j in range(k):
+            mu[j] = sum_wx[j] / sum_w[j]
+        
+        for j in range(k):
+            diff = x - mu[j] # (m, n)
+            sigma[j] = (w[:, j][:, None] * diff).T @ diff / sum_w[j] # (n, n)
+            
         # (3) Compute the log-likelihood of the data to check for convergence.
+        prev_ll = ll
+        ll = 0
+        pxz_new = np.zeros((m, k))
+        for j in range(k):
+            inv_sigma = np.linalg.inv(sigma[j])
+            sqrt_det_sigma = np.linalg.det(sigma[j]) ** 0.5
+            pxz_new[:, j] = gaussian(x, mu[j], inv_sigma, sqrt_det_sigma, pi2k2) * phi[j]
+        ll = np.sum(np.log(pxz_new.sum(axis=1)))
+
+        it += 1  
         # By log-likelihood, we mean `ll = sum_x[log(sum_z[p(x|z) * p(z)])]`.
         # We define convergence by the first iteration where abs(ll - prev_ll) < eps.
         # Hint: For debugging, recall part (a). We showed that ll should be monotonically increasing.
         # *** END CODE HERE ***
 
+    print(f"Converge in {it} itrations")
+    """
+    Converge in 164 itrations
+    Converge in 168 itrations
+    Converge in 119 itrations
+    """
     return w
 
 
@@ -111,20 +182,67 @@ def run_semi_supervised_em(x, x_tilde, z, w, phi, mu, sigma):
     eps = 1e-3   # Convergence threshold
     max_iter = 1000
 
+    m, n = x.shape
+    _, k = w.shape
+    m_tilde, _ = z.shape
+    z_flat = z.flatten().astype(int)
+
+    pi2k2 = (np.pi * 2) ** (n / 2)
+
     # Stop when the absolute change in log-likelihood is < eps
     # See below for explanation of the convergence criterion
     it = 0
     ll = prev_ll = None
     while it < max_iter and (prev_ll is None or np.abs(ll - prev_ll) >= eps):
-        pass  # Just a placeholder for the starter code
         # *** START CODE HERE ***
         # (1) E-step: Update your estimates in w
+        pxz = np.zeros((m, k))
+        for j in range(k):
+            inv_sigma = np.linalg.inv(sigma[j])
+            sqrt_det_sigma = np.linalg.det(sigma[j]) ** 0.5
+            pxz[:, j] = gaussian(x, mu[j], inv_sigma, sqrt_det_sigma, pi2k2) * phi[j]
+        
+        px = pxz.sum(axis = 1).reshape(-1, 1)
+        w = pxz / px
+
         # (2) M-step: Update the model parameters phi, mu, and sigma
+        sum_w = w.sum(axis = 0) # (k, )
+
+        sum_wx = w.T @ x
+
+        for j in range(k):
+            mask_j = (z_flat == j)
+            sum_j = np.sum(mask_j)
+            phi[j] = (sum_w[j] + alpha * sum_j) / (m + alpha * m_tilde)
+            mu[j] = (sum_wx[j] + alpha * np.sum(x_tilde[mask_j, :], axis=0)) / (sum_w[j] + alpha * sum_j)
+            diff = x - mu[j] # (m, n)
+            diff_j = x_tilde[mask_j, :] - mu[j]
+            sigma[j] = ((w[:, j][:, None] * diff).T @ diff + alpha * diff_j.T @ diff_j) \
+                / (sum_w[j] + alpha * sum_j) # (n, n) 
+        
         # (3) Compute the log-likelihood of the data to check for convergence.
+        prev_ll = ll
+        ll = 0
+        pxz_new = np.zeros((m, k))
+        ll_tilde = 0
+        for j in range(k):
+            inv_sigma = np.linalg.inv(sigma[j])
+            sqrt_det_sigma = np.linalg.det(sigma[j]) ** 0.5
+            pxz_new[:, j] = gaussian(x, mu[j], inv_sigma, sqrt_det_sigma, pi2k2) * phi[j]
+            mask_j = (z_flat == j)
+            if np.any(mask_j):
+                dens = gaussian(x_tilde[mask_j], mu[j], inv_sigma, sqrt_det_sigma, pi2k2)
+                ll_tilde += np.sum(np.log(dens))
+
+        ll = np.sum(np.log(pxz_new.sum(axis=1))) + alpha * ll_tilde
+
+        it += 1 
+
         # Hint: Make sure to include alpha in your calculation of ll.
         # Hint: For debugging, recall part (a). We showed that ll should be monotonically increasing.
         # *** END CODE HERE ***
 
+    print(f"Converge in {it} itrations")
     return w
 
 
@@ -152,7 +270,7 @@ def plot_gmm_preds(x, z, with_supervision, plot_id):
         plt.scatter(x_1, x_2, marker='.', c=color, alpha=alpha)
 
     file_name = 'p03_pred{}_{}.pdf'.format('_ss' if with_supervision else '', plot_id)
-    save_path = os.path.join('output', file_name)
+    save_path = os.path.join('PS3','output', file_name)
     plt.savefig(save_path)
 
 
@@ -191,11 +309,11 @@ if __name__ == '__main__':
     # Run NUM_TRIALS trials to see how different initializations
     # affect the final predictions with and without supervision
     for t in range(NUM_TRIALS):
-        main(is_semi_supervised=False, trial_num=t)
+        # main(is_semi_supervised=False, trial_num=t)
 
         # *** START CODE HERE ***
         # Once you've implemented the semi-supervised version,
         # uncomment the following line.
         # You do not need to add any other lines in this code block.
-        # main(with_supervision=True, trial_num=t)
+        main(is_semi_supervised=True, trial_num=t)
         # *** END CODE HERE ***
