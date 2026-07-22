@@ -707,12 +707,8 @@
     }
     \]
 
-    \item[(d)] Figure~\ref{fig:gmm_unsup_0}, Figure~\ref{fig:gmm_unsup_1}, and
-    Figure~\ref{fig:gmm_unsup_2} show the unsupervised GMM cluster assignments
-    obtained from three independent random initializations. The clusters
-    recovered vary noticeably across trials, illustrating that unsupervised
-    EM is sensitive to initialization and can converge to different local
-    optima of the log-likelihood.
+    \item[(d)] See Figure~\ref{fig:gmm_unsup_0}, Figure~\ref{fig:gmm_unsup_1}, and
+    Figure~\ref{fig:gmm_unsup_2}.
     
     \begin{figure}[h]
         \centering
@@ -733,13 +729,8 @@
         \label{fig:gmm_unsup_2}
     \end{figure}
     
-    \item[(e)] Figure~\ref{fig:gmm_ss_0}, Figure~\ref{fig:gmm_ss_1}, and
-    Figure~\ref{fig:gmm_ss_2} show the semi-supervised GMM cluster assignments
-    for the same three initializations, using a small number of labeled
-    examples. Compared to the unsupervised results in part (d), the
-    semi-supervised clusters are much more consistent across trials and
-    converge in fewer iterations, since the labeled examples anchor each
-    Gaussian component to the correct cluster from the start.
+    \item[(e)] See Figure~\ref{fig:gmm_ss_0}, Figure~\ref{fig:gmm_ss_1}, and
+    Figure~\ref{fig:gmm_ss_2}.
     
     \begin{figure}[h]
         \centering
@@ -759,6 +750,19 @@
         \caption{Semi-supervised GMM predictions, trial 3.}
         \label{fig:gmm_ss_2}
     \end{figure}
+
+    \item[(f)] 
+    (i) Number of iterations to converge:
+    
+    The semi-supervised EM converged in fewer iterations than the unsupervised EM. This is because the labeled examples provide additional information that helps guide the parameter updates toward the correct solution.
+    
+    (ii) Stability:
+    
+    The semi-supervised EM was more stable across different random initializations. The cluster assignments from different trials were more consistent, while the unsupervised EM produced more variations due to its dependence on the initial parameters.
+    
+    (iii) Overall quality of assignments:
+    
+    The semi-supervised EM generally produced better cluster assignments. The labeled examples helped each Gaussian component match the correct cluster, especially for the low-variance Gaussian distributions. The unsupervised EM sometimes confused clusters or converged to different local optima, although it was still able to identify the main structure of the data.
     
 \end{enumerate}
 \end{homeworkProblem}
