@@ -12,6 +12,9 @@
 \usepackage[plain]{algorithm}
 \usepackage{algpseudocode}
 
+\usepackage{listings}
+\usepackage{xcolor}
+
 \usetikzlibrary{automata,positioning}
 
 %
@@ -122,6 +125,20 @@
 \newcommand{\dd}{\mathrm{d}}
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\mb}{\mathrm}
+
+\lstset{
+    language=Python,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue},
+    commentstyle=\color{green!60!black},
+    stringstyle=\color{red},
+    numbers=left,
+    numberstyle=\tiny,
+    frame=single,
+    breaklines=true,
+    showstringspaces=false,
+    tabsize=4
+}
 
 \begin{document}
 
@@ -710,19 +727,19 @@
     \item[(d)] See Figure~\ref{fig:gmm_unsup_0}, Figure~\ref{fig:gmm_unsup_1}, and
     Figure~\ref{fig:gmm_unsup_2}.
     
-    \begin{figure}[h]
+    \begin{figure}
         \centering
         \includegraphics[width=0.75\linewidth]{PS3/output/p03_pred_0.pdf}
         \caption{Unsupervised GMM predictions, trial 1.}
         \label{fig:gmm_unsup_0}
     \end{figure}
-    \begin{figure}[h]
+    \begin{figure}
         \centering
         \includegraphics[width=0.75\linewidth]{PS3/output/p03_pred_1.pdf}
         \caption{Unsupervised GMM predictions, trial 2.}
         \label{fig:gmm_unsup_1}
     \end{figure}
-    \begin{figure}[h]
+    \begin{figure}
         \centering
         \includegraphics[width=0.75\linewidth]{PS3/output/p03_pred_2.pdf}
         \caption{Unsupervised GMM predictions, trial 3.}
@@ -732,19 +749,19 @@
     \item[(e)] See Figure~\ref{fig:gmm_ss_0}, Figure~\ref{fig:gmm_ss_1}, and
     Figure~\ref{fig:gmm_ss_2}.
     
-    \begin{figure}[h]
+    \begin{figure}
         \centering
         \includegraphics[width=0.75\linewidth]{PS3/output/p03_pred_ss_0.pdf}
         \caption{Semi-supervised GMM predictions, trial 1.}
         \label{fig:gmm_ss_0}
     \end{figure}
-    \begin{figure}[h]
+    \begin{figure}
         \centering
         \includegraphics[width=0.75\linewidth]{PS3/output/p03_pred_ss_1.pdf}
         \caption{Semi-supervised GMM predictions, trial 2.}
         \label{fig:gmm_ss_1}
     \end{figure}
-    \begin{figure}[h]
+    \begin{figure}
         \centering
         \includegraphics[width=0.75\linewidth]{PS3/output/p03_pred_ss_2.pdf}
         \caption{Semi-supervised GMM predictions, trial 3.}
@@ -764,6 +781,96 @@
     
     The semi-supervised EM generally produced better cluster assignments. The labeled examples helped each Gaussian component match the correct cluster, especially for the low-variance Gaussian distributions. The unsupervised EM sometimes confused clusters or converged to different local optima, although it was still able to identify the main structure of the data.
     
+\end{enumerate}
+\end{homeworkProblem}
+
+\begin{homeworkProblem}
+\begin{enumerate}
+    \item[(a)] See \Cref{fig:comparison}: Comparison of original and compressed images.
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.75\linewidth]{PS3/output/peppers_compressed_comparison.png}
+        \caption{Comparison of original and compressed images}
+        \label{fig:comparison}
+    \end{figure}
+
+    Code:
+    \begin{lstlisting}
+from matplotlib.image import imread, imsave
+import matplotlib.pyplot as plt
+import numpy as np
+
+def k_means(k, x):
+    """
+    K-Means
+
+    Args:
+        k: number of clusters
+        x: m*m pixels image with r, g, and b channels, of shape (m, n, 3)
+    
+    Returns:
+        Compressed image's np array of shape (m, n, 3)
+    """
+
+    min_iter = 30
+    max_iter = 1000
+    eps = 1e-3
+
+    m, n, _ = x.shape
+    x = x.astype(np.float64)
+
+    flat = x.reshape(-1, 3)
+    idx = np.random.choice(flat.shape[0], k, replace=False)
+    mu = flat[idx]
+    z = np.zeros((m, n), dtype=int)
+
+    it = 0
+    prev_mu = None
+
+    while (it < min_iter) or (prev_mu is None or np.linalg.norm(mu - prev_mu) > eps and it < max_iter):
+        diff = x[:, :, np.newaxis, :] - mu[np.newaxis, np.newaxis, :, :]
+        dist = np.linalg.norm(diff, axis=3) # shape (m, n, k)
+        z = np.argmin(dist, axis=2) # shape (m, n)
+
+        prev_mu = mu.copy()
+        for i in range(k):
+            mask = (z == i)
+            if np.any(mask):
+                mu[i] = np.mean(x[mask], axis=0)
+
+        it += 1
+    print(f"Converge in {it} iterations.")
+
+    compressed = mu[z]
+    return np.clip(compressed, 0, 255).astype(np.uint8)
+
+def main():
+    A = imread('PS3/data/peppers-small.tiff')
+
+    k = 16
+    compressed = k_means(k, A)
+
+    fig, axes = plt.subplots(1, 2, figsize=(10, 5))
+    axes[0].imshow(A)
+    axes[0].set_title('Original')
+    axes[0].axis('off')
+ 
+    axes[1].imshow(compressed)
+    axes[1].set_title(f'Compressed (k={k})')
+    axes[1].axis('off')
+ 
+    plt.tight_layout()
+    plt.savefig('PS3/output/peppers_compressed_comparison.png', dpi=150)
+    plt.show()
+ 
+    imsave('PS3/output/peppers_compressed.png', compressed)
+ 
+ 
+if __name__ == '__main__':
+    main()
+    \end{lstlisting}
+
+    \item[(b)] The color now can be represented by a 4-bit number (0 to 15) whereas originally it takes three 8-bits number. Therefore the compression factor is approximately 6.
 \end{enumerate}
 \end{homeworkProblem}
 
