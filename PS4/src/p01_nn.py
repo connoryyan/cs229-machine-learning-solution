@@ -41,6 +41,10 @@ def backward_softmax(x, grad_outputs):
     """
     
     # *** START CODE HERE ***
+    s = forward_softmax(x)
+    c = np.dot(grad_outputs, s)
+    dx = s * (grad_outputs - c)
+    return dx
     # *** END CODE HERE ***
 
 def forward_relu(x):
@@ -71,6 +75,9 @@ def backward_relu(x, grad_outputs):
     """
 
     # *** START CODE HERE ***
+    g = np.zeros(x.shape)
+    g[x > 0] = 1
+    dx = np.dot(grad_outputs, g)
     # *** END CODE HERE ***
 
 def get_initial_params():
@@ -155,6 +162,24 @@ def backward_convolution(conv_W, conv_b, data, output_grad):
     """
 
     # *** START CODE HERE ***
+    _, _, kh, kw = conv_W.shape
+    _, ih, iw = data.shape
+    _, m, n = output_grad.shape
+
+    dW = np.zeros_like(conv_W)
+    for u in range(kh):
+        for v in range(kw):
+            dW[:, :, u, v] = np.einsum("kij,cij->kc", output_grad, data[:, u:(u + m), v:(v + n)])
+
+    db = np.sum(output_grad, axis=(1,2))
+
+    ddata = np.zeros_like(data)
+    for i in range(m):
+        for j in range(n):
+            grad = np.einsum("k,kcuv->cuv", output_grad[:,i,j], conv_W)
+            ddata[:,i:i+kh,j:j+kw] += grad
+
+    return dW, db, ddata
     # *** END CODE HERE ***
 
 def forward_max_pool(data, pool_width, pool_height):
@@ -197,6 +222,19 @@ def backward_max_pool(data, pool_width, pool_height, output_grad):
     """
     
     # *** START CODE HERE ***
+    input_channels, input_width, input_height = data.shape
+        
+    ddata = np.zeros_like(data)
+    
+    for x in range(0, input_width, pool_width):
+        for y in range(0, input_height, pool_height):
+            for c in range(input_channels):
+                idx = np.argmax(data[c, x:(x + pool_width), y:(y + pool_height)])
+                u = idx // input_height
+                v = idx - u * input_height
+                ddata[c, x + u, y + v] += output_grad[c, x//pool_width, y//pool_height]
+
+    return ddata
     # *** END CODE HERE ***
 
 def forward_cross_entropy_loss(probabilities, labels):
@@ -234,6 +272,8 @@ def backward_cross_entropy_loss(probabilities, labels):
     """
 
     # *** START CODE HERE ***
+    dp = -labels / probabilities
+    return dp
     # *** END CODE HERE ***
 
 def forward_linear(weights, bias, data):
@@ -265,6 +305,12 @@ def backward_linear(weights, bias, data, output_grad):
     """
 
     # *** START CODE HERE ***
+    I, O = weights.shape
+    dw = np.outer(data, output_grad)
+    db = output_grad
+    dd = output_grad @ weights.T
+
+    return dw, db, dd
     # *** END CODE HERE ***
 
 def forward_prop(data, labels, params):
