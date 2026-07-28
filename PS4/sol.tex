@@ -371,4 +371,100 @@
 \end{enumerate}
 \end{homeworkProblem}
 
+\begin{homeworkProblem}
+Note that
+\[
+f_u(x) = u \cdot u^Tx
+\]
+Hence,
+\[
+\begin{aligned}
+    \arg \min_{u:u^Tu=1} \sum_{i=1}^m {
+        \| x^{(i)} - f_u(x^{(i)}) \|_2^2
+    }
+    &= \arg \min_{u:u^Tu=1} \sum_{i=1}^m {
+        \| x^{(i)} - u \cdot u^Tx^{(i)} \|_2^2
+    } \\
+    &= \arg \min_{u:u^Tu=1} \sum_{i=1}^m {
+        \| (I - u u^T) x^{(i)} \|_2^2
+    } \\
+    &= \arg \min_{u:u^Tu=1} \sum_{i=1}^m {
+        \left( (I - u u^T) x^{(i)} \right)^T 
+        (I - u u^T) x^{(i)}
+    } \\
+    &= \arg \min_{u:u^Tu=1} \sum_{i=1}^m {
+        (x^{(i)})^T (I - u u^T)^T
+        (I - u u^T) x^{(i)}
+    } \\
+    &= \arg \min_{u:u^Tu=1} \sum_{i=1}^m {
+        (x^{(i)})^T 
+        (I - 2uu^T + uu^Tuu^T)
+        x^{(i)}
+    } \\
+    &= \arg \min_{u:u^Tu=1} \sum_{i=1}^m {
+        (x^{(i)})^T 
+        (u^Tu - 2) uu^T
+        x^{(i)}
+    } \\
+    &= \arg \min_{u:u^Tu=1} \sum_{i=1}^m {
+        (x^{(i)})^T 
+        (1 - 2) uu^T
+        x^{(i)}
+    } \\
+    &= \arg \max_{u:u^Tu=1} \sum_{i=1}^m {
+        (x^{(i)})^T 
+        uu^T
+        x^{(i)}
+    } \\
+    &= \arg \max_{u:u^Tu=1} \sum_{i=1}^m {
+        ((x^{(i)})^T u)^2
+    }
+\end{aligned}
+\]
+Let $\mathcal{L} = \left[ \sum_{i=1}^m { ((x^{(i)})^T u)^2 } \right] - \lambda(u^Tu-1)$. Then
+\[
+\begin{aligned}
+    \frac{\partial \mathcal{L}}{\partial u}
+    &= \left[ \sum_{i=1}^m {
+            2x^{(i)}(x^{(i)})^Tu
+        } \right]
+        - 2\lambda u
+\end{aligned}
+\]
+Let $\frac{\partial \mathcal{L}}{\partial u} = 0$. Then
+\[
+\begin{aligned}
+    \left[ \sum_{i=1}^m {
+        2x^{(i)}(x^{(i)})^Tu
+    } \right]
+    - 2\lambda u &= 0 \\
+    \sum_{i=1}^m {
+        x^{(i)}(x^{(i)})^Tu
+    } &= \lambda u
+\end{aligned}
+\]
+Note that
+\[
+\begin{aligned}
+    \Sigma &= \E[(x-\mu)(x-\mu)^T] \\
+    &= \frac{1}{n} \sum_{i=1}^n {
+        x^{(i)}(x^{(i)})^T
+    }, \ (\mu = 0)
+\end{aligned}
+\]
+Therefore, as
+$\sum_{i=1}^m {
+    x^{(i)}(x^{(i)})^Tu
+} = \lambda u
+$
+\[
+\begin{aligned}
+    n\Sigma u &= \lambda u \\
+    \Sigma u &= \frac{\lambda}{n} u
+\end{aligned}
+\]
+That is to say, $u$ is the first eigenvector of $\Sigma$, and therefore is the first principal component.
+
+\end{homeworkProblem}
+
 \end{document}
