@@ -75,9 +75,7 @@ def backward_relu(x, grad_outputs):
     """
 
     # *** START CODE HERE ***
-    g = np.zeros(x.shape)
-    g[x > 0] = 1
-    dx = np.dot(grad_outputs, g)
+    return grad_outputs * (x > 0)
     # *** END CODE HERE ***
 
 def get_initial_params():
@@ -230,8 +228,8 @@ def backward_max_pool(data, pool_width, pool_height, output_grad):
         for y in range(0, input_height, pool_height):
             for c in range(input_channels):
                 idx = np.argmax(data[c, x:(x + pool_width), y:(y + pool_height)])
-                u = idx // input_height
-                v = idx - u * input_height
+                u = idx // pool_height
+                v = idx - u * pool_height
                 ddata[c, x + u, y + v] += output_grad[c, x//pool_width, y//pool_height]
 
     return ddata
@@ -370,6 +368,30 @@ def backward_prop(data, labels, params):
     """
 
     # *** START CODE HERE ***
+    W1 = params['W1']
+    b1 = params['b1']
+    W2 = params['W2']
+    b2 = params['b2']
+
+    first_convolution = forward_convolution(W1, b1, data)
+    first_max_pool = forward_max_pool(first_convolution, MAX_POOL_SIZE, MAX_POOL_SIZE)
+    first_after_relu = forward_relu(first_max_pool)
+    flattened = np.reshape(first_after_relu, (-1))
+    logits = forward_linear(W2, b2, flattened)
+    y = forward_softmax(logits)
+
+    dp = backward_cross_entropy_loss(y, labels)
+    dsoftmax = backward_softmax(logits, dp)
+
+    dW2, db2, dflattened = backward_linear(W2, b2, flattened, dsoftmax)
+
+    dflattened_reshaped = np.reshape(dflattened, first_max_pool.shape)
+    drelu = backward_relu(first_max_pool, dflattened_reshaped)
+
+    dpool = backward_max_pool(first_convolution, MAX_POOL_SIZE, MAX_POOL_SIZE, drelu)
+    dW1, db1, dconv = backward_convolution(W1, b1, data, dpool)
+
+    return {"W1": dW1, "b1": db1, "W2": dW2, "b2": db2}
     # *** END CODE HERE ***
 
 def forward_prop_batch(batch_data, batch_labels, params, forward_prop_func):
@@ -453,7 +475,7 @@ def nn_train(
     return params, cost_dev, accuracy_dev
 
 def nn_test(data, labels, params):
-    output, cost = forward_pr(data, labels, params)
+    output, cost = forward_prop(data, labels, params)
     accuracy = compute_accuracy(output, labels)
     return accuracy
 
@@ -500,11 +522,11 @@ def run_train(all_data, all_labels, backward_prop_func):
     ax2.set_xlabel('time')
     ax2.set_ylabel('accuracy')
 
-    fig.savefig('output/train.png')
+    fig.savefig('PS4/output/train.png')
 
 def main():
     np.random.seed(100)
-    train_data, train_labels = read_data('../data/images_train.csv', '../data/labels_train.csv')
+    train_data, train_labels = read_data('PS4/data/images_train.csv', 'PS4/data/labels_train.csv')
     train_labels = one_hot_labels(train_labels)
     p = np.random.permutation(60000)
     train_data = train_data[p,:]
