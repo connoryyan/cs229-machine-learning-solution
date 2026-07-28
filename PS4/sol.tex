@@ -159,6 +159,216 @@
 \end{enumerate}
 \end{homeworkProblem}
 
+\begin{homeworkProblem}
+\begin{enumerate}
+    \item[(a)] 
+    \[
+    \begin{aligned}
+        \E_{\substack{s\sim p(s) \\ a\sim\pi_0(s, a)}}\left[
+            \frac{\pi_1(s, a)}{\pi_0(s, a)}
+            R(s, a)
+        \right]
+        &= \sum_{(s, a)} {
+            \frac{\pi_1(s, a)}{\pi_0(s, a)}
+            R(s, a)
+            p(s)
+            \pi_0(s, a)
+        } \\
+        &= \sum_{(s, a)} {
+            \pi_1(s, a)
+            R(s, a)
+            p(s)
+        } \\
+        &= \E_{\substack{s\sim p(s) \\ a\sim\pi_1(s, a)}}\left[
+            R(s, a)
+        \right]
+    \end{aligned}
+    \]
 
+    \item[(b)]
+    \[
+    \begin{aligned}
+        \frac{
+            \E_{\substack{s\sim p(s) \\ a\sim\pi_0(s, a)}}\left[
+                \frac{\pi_1(s, a)}{\pi_0(s, a)}
+                R(s, a)
+            \right]
+        }{
+            \E_{\substack{s\sim p(s) \\ a\sim\pi_0(s, a)}}\left[
+                \frac{\pi_1(s, a)}{\pi_0(s, a)}
+            \right] 
+        }
+        &= \frac{
+            \sum_{(s, a)}{
+                \frac{\pi_1(s, a)}{\pi_0(s, a)}
+                R(s, a)
+                p(s)
+                \pi_0(s, a)
+            }
+        }{
+            \sum_{(s, a)}{
+                \frac{\pi_1(s, a)}{\pi_0(s, a)}
+                p(s)
+                \pi_0(s, a)
+            }
+        } \\
+        &= \frac{
+            \sum_{(s, a)}{
+                R(s, a)
+                p(s)
+                \pi_1(s, a)
+            }
+        }{
+            \sum_{(s, a)}{
+                p(s)
+                \pi_1(s, a)
+            }
+        } \\
+        &= \E_{\substack{s\sim p(s) \\ a\sim\pi_1(s, a)}}\left[
+            R(s, a)
+        \right]
+    \end{aligned}
+    \]
+
+    \item[(c)] Suppose we have $n$ samples. Then the weighted importance sampling estimator has the form
+    \[
+        \frac{
+            \sum_{i=1}^n {
+                \frac{\pi_1(s_i, a_i)}{\pi_0(s_i, a_i)}
+                R(s_i, a_i)
+            }
+        }{
+            \sum_{i=1}^n {
+                \frac{\pi_1(s_i, a_i)}{\pi_0(s_i, a_i)}
+            }
+        }
+    \]
+    Consider the case that there is only one sample, i.e, $n = 1$.
+    \[
+    \begin{aligned}
+        \frac{
+            \sum_{i=1}^n {
+                \frac{\pi_1(s_i, a_i)}{\pi_0(s_i, a_i)}
+                R(s_i, a_i)
+            }
+        }{
+            \sum_{i=1}^n {
+                \frac{\pi_1(s_i, a_i)}{\pi_0(s_i, a_i)}
+            }
+        }
+        &= \frac{
+            \frac{\pi_1(s_1, a_1)}{\pi_0(s_1 a_1)}
+            R(s_1, a_1)
+        }{
+            \frac{\pi_1(s_1, a_1)}{\pi_0(s_1, a_1)}
+        } \\
+        &= R(s_1, a_1)
+    \end{aligned}
+    \]
+    The expectation is
+    \[
+    \begin{aligned}
+        \E_{\substack{s_1\sim p(s_1) \\ a_1\sim\pi_0(s_1, a_1)}}\left[
+            R(s_1, a_1)
+        \right]
+        &= \E_{\substack{s\sim p(s) \\ a\sim\pi_0(s, a)}}\left[
+            R(s, a)
+        \right]
+    \end{aligned}
+    \]
+    Which is not quite likely to be equal to the objective value $\E_{\substack{s\sim p(s) \\ a\sim\pi_1(s, a)}}\left[ R(s, a) \right]$.
+
+    \item[(d)] 
+    \item[i.] 
+    \[
+    \begin{aligned}
+        &\E_{\substack{s\sim p(s) \\ a\sim\pi_0(s, a)}}\left[
+            \E_{a\sim\pi_1(s, a)}\left[
+                \hat{R}(s, a)
+            \right]
+            + \frac{\pi_1(s, a)}{\pi_0(s, a)}
+            \left( R(s, a) - \hat{R}(s, a) \right)
+        \right] \\
+        =& \sum_{(s, a)} \left[
+            \frac{\pi_1(s, a)}{\pi_0(s, a)}
+            \left( R(s, a) - \hat{R}(s, a) \right)
+            + \sum_a {
+                \hat{R}(s, a)
+                \pi_1(s, a)
+            }
+        \right]
+        p(s)
+        \pi_0(s, a) \\
+        =& \sum_{(s, a)} {
+            p(s)\pi_1(s, a)
+            \left( R(s, a) - \hat{R}(s, a) \right)
+            }
+            + \sum_{(s, a)} {
+            p(s)\pi_0(s, a) \sum_a {
+                \hat{R}(s, a)
+                \pi_1(s, a)
+            }
+        } \\
+        =& \sum_{(s, a)} {
+            p(s)\pi_1(s, a)
+            \left( R(s, a) - \hat{R}(s, a) \right)
+            }
+            + \sum_{s} {
+            p(s) \sum_a {
+                \hat{R}(s, a)
+                \pi_1(s, a)
+            }
+        } \\
+        =& \sum_{(s, a)} {
+        p(s)\pi_1(s, a) \left[
+            R(s, a)
+            -\hat{R}(s, a)
+            +\hat{R}(s, a)
+        \right]
+        } \\
+        =& \E_{\substack{s\sim p(s) \\ a\sim\pi_1(s, a)}}\left[
+            R(s, a)
+        \right]
+    \end{aligned}
+    \]
+
+    \item[ii.] 
+    \[
+    \begin{aligned}
+        \E_{\substack{s\sim p(s) \\ a\sim\pi_0(s, a)}}\left[
+            \E_{a\sim\pi_1(s, a)}\left[
+                R(s, a)
+            \right]
+            + \frac{\pi_1(s, a)}{\hat{\pi}_0(s, a)}
+            \left( R(s, a) - R(s, a) \right)
+        \right]
+        &= \E_{\substack{s\sim p(s) \\ a\sim\pi_0(s, a)}}\left[
+            \E_{a\sim\pi_1(s, a)}\left[
+                R(s, a)
+            \right]
+        \right] \\
+        &= \sum_{(s, a)} {
+            p(s)\pi_0(s, a) \sum_a {
+                R(s, a)
+                \pi_1(s, a)
+            }
+        } \\
+        &= \sum_s {
+            p(s) \sum_a {
+                R(s, a)
+                \pi_1(s, a)
+            }
+        } \\
+        &= \E_{\substack{s\sim p(s) \\ a\sim\pi_1(s, a)}}\left[
+            R(s, a)
+        \right]
+    \end{aligned}
+    \]
+
+    \item[(e)] 
+    \item[i.] Importance sampling estimator since $\pi$ is easier to be modelled.
+    \item[ii.] Regression estimator since $R$ is easier to be modelled.
+\end{enumerate}
+\end{homeworkProblem}
 
 \end{document}
