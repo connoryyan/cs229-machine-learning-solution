@@ -467,4 +467,103 @@ That is to say, $u$ is the first eigenvector of $\Sigma$, and therefore is the f
 
 \end{homeworkProblem}
 
+\begin{homeworkProblem}
+\begin{enumerate}
+    \item[(a)]
+    \[
+    \begin{aligned}
+        \sum_{j=1}^d \log g'(w_j^T x^{(i)})
+        &= \sum_{j=1}^d \log\left(
+            \frac{1}{\sqrt{2\pi}}
+            \exp \left(
+                -\frac{1}{2}
+                (w_j^T x^{(i)})^2
+            \right)
+        \right) \\
+        &= \sum_{j=1}^d
+            -\frac{1}{2}
+            (w_j^T x^{(i)})^2
+            -\frac{1}{2} \log (2\pi) \\
+        &= -\frac{1}{2}
+            \|W x^{(i)}\|_2^2 - \frac{d}{2} \log (2\pi)
+    \end{aligned}
+    \]
+    \[
+    \begin{aligned}
+        \frac{\partial \ell}{\partial W}
+        &= \sum_{i=1}^n {
+            W^{-T}
+            -Wx^{(i)}(x^{(i)})^T
+        } \\
+        &= nW^{-T} - WX^TX
+    \end{aligned}
+    \]
+    Let $\frac{\partial \ell}{\partial W} = 0$. 
+    \[
+    \begin{aligned}
+        nW^{-T} &= WX^TX \\
+        W^TWX^TX &= nI
+    \end{aligned}
+    \]
+    Given any arbituary orthogonal matrix $R \in \R^{d\times d}$ such that $R^T = R^{-1}$, then we have
+    \[
+        W^TR^TRWX^TX = W^TWX^TX = I,
+    \]
+    i.e, whenever we have solution $W$, there is always another solution $RW$.
+    This is because since Gaussian distribution is rotational invariance, if applying a rotational transformation $R$ on $s$, it is still Gaussian. 
+
+    \item[(b)] 
+    \[
+    \begin{aligned}
+        \sum_{j=1}^d \log g'(w_j^T x^{(i)})
+        &= \sum_{j=1}^d -|w_j^Tx^{(i)}| - \log 2 \\
+        &= -\| Wx^{(i)} \|_1 - d\log2
+    \end{aligned}
+    \]
+    As
+    $
+        \frac{\partial}{\partial w_j} \sum_{j=1}^d |w_j^Tx^{(i)}|
+        = \mathrm{sign} (w_j^Tx^{(i)}) \cdot x^{(i)},
+    $
+    \[
+    \begin{aligned}
+        \frac{\partial}{\partial W} \sum_{j=1}^d \log g'(w_j^T x^{(i)})
+        &= \frac{\partial}{\partial W} \| Wx^{(i)} \|_1 \\
+        &= \begin{bmatrix}
+            \mathrm{sign} (w_1^Tx^{(i)}) (x^{(i)})^T \\
+            \mathrm{sign} (w_2^Tx^{(i)}) (x^{(i)})^T \\
+            \vdots \\
+            \mathrm{sign} (w_d^Tx^{(i)}) (x^{(i)})^T
+        \end{bmatrix} \\
+        &= \mathrm{sign} (Wx^{(i)}) x^{(i)}
+    \end{aligned}
+    \]
+    \[
+    \begin{aligned}
+        \frac{\partial \ell}{\partial W}
+        &= \sum_{i=1}^n {
+            W^{-T}
+            -\frac{\partial}{\partial W}
+            \| Wx^{(i)} \|_1
+        } \\
+        &= \sum_{i=1}^n {
+            W^{-T}
+            -\mathrm{sign} (Wx^{(i)}) x^{(i)}
+        }
+    \end{aligned}
+    \]
+    Hence, 
+    \[
+    W := W + \alpha \left(
+            W^{-T}
+            -\mathrm{sign} (Wx^{(i)}) x^{(i)}
+        \right)
+    \]
+
+    \item[(c)] 
+
+    
+\end{enumerate}
+\end{homeworkProblem}
+
 \end{document}
