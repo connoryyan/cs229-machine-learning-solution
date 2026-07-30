@@ -21,7 +21,8 @@ def update_W(W, x, learning_rate):
     """
     
     # *** START CODE HERE ***
-    # *** END CODE HERE ***
+    updated_W = W + learning_rate * (np.linalg.inv(W.T) - np.outer(np.sign(W @ x.T), x))
+    # *** END CODE HERE *** 
 
     return updated_W
 
@@ -40,8 +41,8 @@ def unmix(X, W):
 
     S = np.zeros(X.shape)
 
-
     # *** START CODE HERE ***
+    S = X @ W.T
     # *** END CODE HERE ***
 
     return S
@@ -53,14 +54,14 @@ def normalize(dat):
     return 0.99 * dat / np.max(np.abs(dat))
 
 def load_data():
-    mix = np.loadtxt('../data/mix.dat')
+    mix = np.loadtxt('PS4/data/mix.dat')
     return mix
 
 def save_W(W):
-    np.savetxt('output/W.txt',W)
+    np.savetxt('PS4/output/W.txt',W)
 
 def save_sound(audio, name):
-    scipy.io.wavfile.write('output/{}.wav'.format(name), Fs, audio)
+    scipy.io.wavfile.write('PS4/output/{}.wav'.format(name), Fs, audio)
 
 def unmixer(X):
     M, N = X.shape
