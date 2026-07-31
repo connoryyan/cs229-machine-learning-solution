@@ -559,10 +559,78 @@ That is to say, $u$ is the first eigenvector of $\Sigma$, and therefore is the f
             -\mathrm{sign} (Wx^{(i)}) x^{(i)}
         \right)
     \]
-
-    \item[(c)] 
-
     
+    \item[(c)] See the code.
+
+\end{enumerate}
+\end{homeworkProblem}
+
+\begin{homeworkProblem}
+\begin{enumerate}
+    \item[(a)]
+    \[
+    \begin{aligned}
+        B(V_1) - B(V_2)
+        &= R(s) + \gamma \max_{a\in A} 
+            \sum_{s'\in S} P_{sa}(s')V_1(s') 
+            - R(s) - \gamma \max_{a\in A} 
+            \sum_{s'\in S} P_{sa}(s')V_2(s') \\
+        &=  \gamma \max_{a\in A} 
+            \sum_{s'\in S} P_{sa}(s')V_1(s') 
+            -\gamma \max_{a\in A} 
+            \sum_{s'\in S} P_{sa}(s')V_2(s')
+    \end{aligned}
+    \]
+    Let $a_1 = \arg \max_{a\in A} 
+            \sum_{s'\in S} P_{sa}(s')V_1(s')$
+    \[
+    \begin{aligned}
+        B(V_1) - B(V_2)
+        &=  \gamma \max_{a\in A} 
+            \sum_{s'\in S} P_{sa}(s')V_1(s') 
+            -\gamma \max_{a\in A} 
+            \sum_{s'\in S} P_{sa}(s')V_2(s') \\
+        &\le \gamma 
+            \sum_{s'\in S} P_{sa_1}(s')V_1(s') 
+            -\gamma 
+            \sum_{s'\in S} P_{sa_1}(s')V_2(s') \\
+        &= \gamma \sum_{s'\in S} P_{sa_1}(s')
+            \left( V_1(s')- V_2(s') \right) \\
+        &\le \gamma \sum_{s'\in S} P_{sa_1}(s')
+            | V_1(s')- V_2(s') | \\
+        &\le \gamma \sum_{s'\in S} P_{sa_1}(s')
+            \max\left| V_1 - V_2 \right| \\
+        &= \gamma \| V_1 - V_2 \|_\infty \\
+    \end{aligned}
+    \]
+    Whithout losing generality, let $B(V_1) \ge B(V_2)$, and therefore
+    \[
+    B(V_1) - B(V_2) = |B(V_1) - B(V_2)|
+    \]
+    Since $B(V_1)(s) - B(V_2)(s) \le \gamma \| V_1 - V_2 \|_\infty$ holds for any $s$,
+    \[
+    \max_{s\in S}|B(V_1) - B(V_2)| \le \gamma \| V_1 - V_2 \|_\infty
+    \]
+    Hence,
+    \[
+    \| B(V_1) - B(V_2) \|_\infty \le \gamma \| V_1 - V_2 \|_\infty
+    \]
+
+    \item[(b)] Assume there are two fixed points $B(V_1) = V_1$ and $B(V_2) = V_2$ for $B$. Therefore,
+    \[
+    \begin{aligned}
+        \| B(V_1) - B(V_2) \|_\infty &\le \gamma \| V_1 - V_2 \|_\infty \\
+        \| V_1 - V_2 \|_\infty &\le \gamma \| V_1 - V_2 \|_\infty \\
+        (\gamma - 1) \| V_1 - V_2 \|_\infty &\ge 0 \\
+    \end{aligned}
+    \]
+    As $\gamma < 1$, $\| V_1 - V_2 \|_\infty = 0$. That is to say, $V_1$ and $V_2$ are the same fixed point, and there is only one fixed point for $B$.
+\end{enumerate}
+\end{homeworkProblem}
+
+\begin{homeworkProblem}
+\begin{enumerate}
+    \item[(a)]
 \end{enumerate}
 \end{homeworkProblem}
 
