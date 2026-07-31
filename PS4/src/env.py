@@ -11,6 +11,9 @@ class CartPole:
         self.mass = self.mass_cart + self.mass_pole
         self.length = 0.7 # actually half the pole length
         self.pole_mass_length = self.mass_pole * self.length
+        
+        plt.ion()
+        self.fig, self.ax = plt.subplots(figsize=(8, 4))
 
     def simulate(self, action, state_tuple):
         """
@@ -133,24 +136,57 @@ class CartPole:
         -------
         """
         x, x_dot, theta, theta_dot = state_tuple
-        X = [x, x + 4*self.length * sin(theta)]
-        Y = [0, 4*self.length * cos(theta)]
-        plt.close('all')
-        fig, ax = plt.subplots(1)
-        plt.ion()
-        ax.set_xlim(-3, 3)
-        ax.set_ylim(-0.5, 3.5)
-        ax.plot(X, Y)
-        cart = patches.Rectangle((x - 0.4, -0.25), 0.8, 0.25,
-                        linewidth=1, edgecolor='k', facecolor='cyan')
-        base = patches.Rectangle((x - 0.01, -0.5), 0.02, 0.25,
-                        linewidth=1, edgecolor='k', facecolor='r')
-        ax.add_patch(cart)
-        ax.add_patch(base)
-        x_dot_str, theta_str, theta_dot_str = '\\dot{x}', '\\theta', '\\dot{\\theta}'
-        ax.set_title('x: %.3f, $%s$: %.3f, $%s$: %.3f, $%s$: %.3f'\
-                                %(x, x_dot_str, x_dot, theta_str, theta, theta_dot_str, x))
-        plt.show()
+
+        X = [x, x + 4 * self.length * sin(theta)]
+        Y = [0, 4 * self.length * cos(theta)]
+
+        self.ax.clear()
+
+        self.ax.set_xlim(-3, 3)
+        self.ax.set_ylim(-0.5, 3.5)
+
+        self.ax.plot(X, Y, 'k-', linewidth=2)
+
+        cart = patches.Rectangle(
+            (x - 0.4, -0.25),
+            0.8,
+            0.25,
+            linewidth=1,
+            edgecolor='k',
+            facecolor='cyan'
+        )
+
+        base = patches.Rectangle(
+            (x - 0.01, -0.5),
+            0.02,
+            0.25,
+            linewidth=1,
+            edgecolor='k',
+            facecolor='r'
+        )
+
+        self.ax.add_patch(cart)
+        self.ax.add_patch(base)
+
+        x_dot_str = r'\dot{x}'
+        theta_str = r'\theta'
+        theta_dot_str = r'\dot{\theta}'
+
+        self.ax.set_title(
+            'x: %.3f, $%s$: %.3f, $%s$: %.3f, $%s$: %.3f'
+            % (
+                x,
+                x_dot_str,
+                x_dot,
+                theta_str,
+                theta,
+                theta_dot_str,
+                theta_dot,
+            )
+        )
+
+        self.fig.canvas.draw()
+        self.fig.canvas.flush_events()
         plt.pause(pause_time)
 
 class Physics:

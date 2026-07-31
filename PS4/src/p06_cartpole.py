@@ -125,6 +125,13 @@ def choose_action(state, mdp_data):
     """
 
     # *** START CODE HERE ***
+    v = np.zeros(2)
+    for a in range(2):
+        v[a] = np.dot(mdp_data['transition_probs'][state, :, a], mdp_data['value'])
+
+    if v[0] == v[1]:
+        return np.random.randint(2)
+    return np.argmax(v)
     # *** END CODE HERE ***
 
 def update_mdp_transition_counts_reward_counts(mdp_data, state, action, new_state, reward):
@@ -149,6 +156,10 @@ def update_mdp_transition_counts_reward_counts(mdp_data, state, action, new_stat
     """
 
     # *** START CODE HERE ***
+    mdp_data['transition_counts'][state, new_state, action] += 1
+    mdp_data['reward_counts'][new_state, 1] += 1
+    if reward == -1:
+        mdp_data['reward_counts'][new_state, 0] += 1
     # *** END CODE HERE ***
 
     # This function does not return anything
@@ -172,6 +183,12 @@ def update_mdp_transition_probs_reward(mdp_data):
     """
 
     # *** START CODE HERE ***
+    num_new_states = np.sum(mdp_data['transition_counts'], axis = 1, keepdims=True)
+    mask = np.repeat(num_new_states > 0, mdp_data['num_states'], axis=1)
+    mdp_data['transition_probs'][mask] = (mdp_data['transition_counts'] / num_new_states)[mask]
+
+    visited = mdp_data['reward_counts'][:, 1] > 0
+    mdp_data['reward'][visited] = -mdp_data['reward_counts'][:, 0][visited] / mdp_data['reward_counts'][:, 1][visited]
     # *** END CODE HERE ***
 
     # This function does not return anything
@@ -198,16 +215,33 @@ def update_mdp_value(mdp_data, tolerance, gamma):
     """
 
     # *** START CODE HERE ***
+    p = mdp_data['transition_probs']
+    r = mdp_data['reward']
+
+    it = 0
+    while True:
+        v = mdp_data['value']
+
+        new_value = r + gamma * np.max(np.sum(p * v[np.newaxis, :, np.newaxis], axis=1), axis=1)
+
+        diff = np.max(np.abs(new_value - v))
+        mdp_data['value'] = new_value
+        it += 1
+
+        if diff < tolerance:
+            break
+
+    return it == 1
     # *** END CODE HERE ***
 
 def main(plot=True):
     # Seed the randomness of the simulation so this outputs the same thing each time
-    seed = 0
+    seed = 3
     np.random.seed(seed)
 
     # Simulation parameters
     pause_time = 0.0001
-    min_trial_length_to_start_display = 100
+    min_trial_length_to_start_display = 50000
     display_started = min_trial_length_to_start_display == 0
 
     NUM_STATES = 163
@@ -238,8 +272,8 @@ def main(plot=True):
     # `state` is the number given to this state, you only need to consider
     # this representation of the state
     state = cart_pole.get_state(state_tuple)
-    # if min_trial_length_to_start_display == 0 or display_started == 1:
-    #     cart_pole.show_cart(state_tuple, pause_time)
+    if min_trial_length_to_start_display == 0 or display_started == 1:
+        cart_pole.show_cart(state_tuple, pause_time)
 
     mdp_data = initialize_mdp_data(NUM_STATES)
 
@@ -264,8 +298,8 @@ def main(plot=True):
 
         # Get the state number corresponding to new state vector
         new_state = cart_pole.get_state(state_tuple)
-        # if display_started == 1:
-        #     cart_pole.show_cart(state_tuple, pause_time)
+        if display_started == 1:
+            cart_pole.show_cart(state_tuple, pause_time)
 
         # reward function to use - do not change this!
         if new_state == NUM_STATES - 1:
@@ -323,7 +357,7 @@ def main(plot=True):
         plt.xlabel('Num failures')
         plt.ylabel('Log of num steps to failure')
         plt.title('seed = {}'.format(seed))
-        plt.savefig('output/control_{}.png'.format(seed))
+        plt.savefig('PS4/output/control_{}.png'.format(seed))
 
     return np.array(time_steps_to_failure)
     
