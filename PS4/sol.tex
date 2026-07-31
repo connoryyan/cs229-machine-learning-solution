@@ -630,7 +630,48 @@ That is to say, $u$ is the first eigenvector of $\Sigma$, and therefore is the f
 
 \begin{homeworkProblem}
 \begin{enumerate}
-    \item[(a)]
+    \item[(a)] Converge in 140 trials.
+    
+    \item[(b)] See \Cref{fig:control_0}
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.75\linewidth]{PS4/output/control_0.png}
+        \caption{Learning curve with seed = 0}
+        \label{fig:control_0}
+    \end{figure}
+    
+    \item[(c)]
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.75\linewidth]{PS4/output/control_1.png}
+        \caption{Learning curve with seed = 1}
+        \label{fig:control_1}
+    \end{figure}
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.75\linewidth]{PS4/output/control_2.png}
+        \caption{Learning curve with seed = 2}
+        \label{fig:control_2}
+    \end{figure}
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.75\linewidth]{PS4/output/control_3.png}
+        \caption{Learning curve with seed = 3}
+        \label{fig:control_3}
+    \end{figure}
+    From \Cref{fig:control_1,fig:control_2,fig:control_3} we have observations:
+    \begin{itemize}
+        \item Every seed shows a fast rise early on , where the algorithm quickly learns a working balancing policy.
+        \item After that, every seed learns a stable policy where the red smoothed line flattens out and stays roughly constant.
+        \item The exact numbers differ a lot between seeds: how many failures it takes to converge , how high the final policy is (log steps of ~5.7 up to ~8), and how noisy the black raw curve is during the flattened policy.
+    \end{itemize}
+    and What is implied about the algorithm:
+    \begin{itemize}
+        \item The algorithm reliably learns. 
+        \item The exact performance is random and depends on the choice of seed.
+    \end{itemize}
+
+    
 \end{enumerate}
 \end{homeworkProblem}
 
